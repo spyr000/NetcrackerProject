@@ -1,7 +1,6 @@
 package contracts;
 
 import person.Person;
-
 import java.util.Date;
 
 public abstract class Contract {

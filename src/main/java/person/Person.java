@@ -9,6 +9,14 @@ public class Person {
     private Gender gender;
     private int[] passportData;
 
+    public Person(int id, String name, Date dateOfBirth, Gender gender, int[] passportData) {
+        this.id = id;
+        this.name = name;
+        this.dateOfBirth = dateOfBirth;
+        this.gender = gender;
+        this.passportData = passportData;
+    }
+
     public int getId() {
         return id;
     }

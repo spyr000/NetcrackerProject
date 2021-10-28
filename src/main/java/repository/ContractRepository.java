@@ -28,6 +28,9 @@ public class ContractRepository {
         return null;
     }
 
+    public void deleteByID(int id){
+        ;
+    }
 
     public int getLenght() {
         return contracts.length;
