@@ -29,7 +29,21 @@ public class ContractRepository {
     }
 
     public void deleteByID(int id){
-        ;
+        int index = -1;
+        for(int i = 0;i < getLenght();i++)
+        {
+            if(contracts[i].getId() == id)
+            {
+                index = i;
+                break;
+            }
+        }
+        if(index == -1)
+            return;
+        Contract[] result = new Contract[getLenght() - 1];
+        System.arraycopy(contracts, 0, result, 0, index);
+        System.arraycopy(contracts, index + 1, result, index, getLenght() - index - 1);
+        contracts = result;
     }
 
     public int getLenght() {
