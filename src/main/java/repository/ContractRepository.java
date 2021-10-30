@@ -2,8 +2,6 @@ package repository;
 
 import contracts.Contract;
 
-import java.util.Arrays;
-
 public class ContractRepository {
     private Contract[] contracts;
     public ContractRepository(){
@@ -40,6 +38,7 @@ public class ContractRepository {
         }
         if(index == -1)
             return;
+
         Contract[] result = new Contract[getLenght() - 1];
         System.arraycopy(contracts, 0, result, 0, index);
         System.arraycopy(contracts, index + 1, result, index, getLenght() - index - 1);
