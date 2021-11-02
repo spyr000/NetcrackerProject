@@ -11,10 +11,11 @@ import java.time.LocalDate;
  */
 public class PersonTest {
     Person person;
-    @Before
+
     /**
      * This function initializes field {@link PersonTest#person}
      */
+    @Before
     public void setUp()
     {
         person = new Person(1,"Testerov Tester Testerovich",

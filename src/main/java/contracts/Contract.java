@@ -16,8 +16,8 @@ public abstract class Contract {
 
     /**
      * @param id Contract ID
-     * @param startDate Сontract start date
-     * @param finishDate Сontract expiration date
+     * @param startDate Contract start date
+     * @param finishDate Contract expiration date
      * @param number Contract number
      * @param owner Contract owner
      */
