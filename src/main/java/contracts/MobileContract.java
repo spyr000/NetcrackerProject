@@ -2,7 +2,8 @@ package contracts;
 
 import person.Person;
 
-import java.util.Date;
+import java.time.LocalDate;
+
 
 public class MobileContract extends Contract {
     private double minutesAmount;
@@ -33,7 +34,7 @@ public class MobileContract extends Contract {
         this.trafficGbAmount = trafficGbAmount;
     }
 
-    public MobileContract(int id, Date startTime, Date finishTime, int number, Person owner, double minutesAmount, int smsAmount, double trafficGbAmount) {
+    public MobileContract(int id, LocalDate startTime, LocalDate finishTime, int number, Person owner, double minutesAmount, int smsAmount, double trafficGbAmount) {
         super(id, startTime, finishTime, number, owner);
         this.minutesAmount = minutesAmount;
         this.smsAmount = smsAmount;

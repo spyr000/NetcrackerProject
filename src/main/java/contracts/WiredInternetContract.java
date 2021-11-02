@@ -2,7 +2,7 @@ package contracts;
 
 import person.Person;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class WiredInternetContract extends Contract {
 
@@ -16,7 +16,7 @@ public class WiredInternetContract extends Contract {
         this.connectionSpeed = connectionSpeed;
     }
 
-    public WiredInternetContract(int id, Date startTime, Date finishTime, int number, Person owner, double connectionSpeed) {
+    public WiredInternetContract(int id, LocalDate startTime, LocalDate finishTime, int number, Person owner, double connectionSpeed) {
         super(id, startTime, finishTime, number, owner);
         this.connectionSpeed = connectionSpeed;
     }

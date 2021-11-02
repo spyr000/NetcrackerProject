@@ -1,15 +1,16 @@
 package person;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class Person {
+
     private int id;
     private String name;
-    private Date dateOfBirth;
+    private LocalDate dateOfBirth;
     private Gender gender;
     private int[] passportData;
 
-    public Person(int id, String name, Date dateOfBirth, Gender gender, int[] passportData) {
+    public Person(int id, String name, LocalDate dateOfBirth, Gender gender, int[] passportData) {
         this.id = id;
         this.name = name;
         this.dateOfBirth = dateOfBirth;
@@ -33,11 +34,11 @@ public class Person {
         this.name = name;
     }
 
-    public Date getDateOfBirth() {
+    public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(Date dateOfBirth) {
+    public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 
@@ -58,6 +59,6 @@ public class Person {
     }
 
     public int getAge() {
-        return (new Date()).getYear() - dateOfBirth.getYear();
+        return LocalDate.now().getYear() - dateOfBirth.getYear();
     }
 }

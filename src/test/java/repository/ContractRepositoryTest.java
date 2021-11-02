@@ -10,9 +10,9 @@ import org.junit.Test;
 import person.Gender;
 import person.Person;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 public class ContractRepositoryTest {
@@ -26,12 +26,12 @@ public class ContractRepositoryTest {
         contractRepository = new ContractRepository();
 
         mobileContract = new MobileContract(1,
-                new Date(2021, Calendar.FEBRUARY, 24),
-                new Date(2022, Calendar.MARCH, 18),
+                LocalDate.of(2021, Calendar.FEBRUARY, 24),
+                LocalDate.of(2022, Calendar.MARCH, 18),
                 3,
                 new Person(2,
                         "Testerov Tester Testerovich",
-                        new Date(2001, Calendar.APRIL, 28),
+                        LocalDate.of(2001, Calendar.APRIL, 28),
                         Gender.Male,
                         new int[]{2016, 134567}),
                 12,
@@ -40,25 +40,25 @@ public class ContractRepositoryTest {
 
         digitalTelevisionContract = new DigitalTelevisionContract(
                 2,
-                new Date(2021, Calendar.JANUARY, 24),
-                new Date(2022, Calendar.MARCH, 18),
+                LocalDate.of(2021, Calendar.JANUARY, 24),
+                LocalDate.of(2022, Calendar.MARCH, 18),
                 4,
                 new Person(3,
                         "Testerov Tester Testerovich",
-                        new Date(2002, Calendar.MAY, 29),
+                        LocalDate.of(2002, Calendar.MAY, 29),
                         Gender.Male,
                         new int[]{2016, 134567}),
-                new ArrayList<String>(List.of(new String[]{"NTV", "TNT", "STS", "MatchTV"}))
+                new ArrayList<>(List.of(new String[]{"NTV", "TNT", "STS", "MatchTV"}))
         );
 
         wiredInternetContract = new WiredInternetContract(
                 3,
-                new Date(2021, 01, 24),
-                new Date(2022, 02, 18),
+                LocalDate.of(2021, 1, 24),
+                LocalDate.of(2022, 2, 18),
                 5,
                 new Person(4,
                         "Testerova Tester Testerovna",
-                        new Date(2003, 05, 25),
+                        LocalDate.of(2003, 5, 25),
                         Gender.Female,
                         new int[]{2016, 134567}),
                 23.7
@@ -87,12 +87,12 @@ public class ContractRepositoryTest {
         ContractRepository contractRepository = new ContractRepository();
 
         Contract mobileContract = new MobileContract(1,
-                new Date(2021, Calendar.FEBRUARY, 24),
-                new Date(2022, Calendar.MARCH, 18),
+                LocalDate.of(2021, Calendar.FEBRUARY, 24),
+                LocalDate.of(2022, Calendar.MARCH, 18),
                 3,
                 new Person(2,
                         "Testerov Tester Testerovich",
-                        new Date(2001, Calendar.APRIL, 28),
+                        LocalDate.of(2001, Calendar.APRIL, 28),
                         Gender.Male,
                         new int[]{2016, 134567}),
                 12,
@@ -109,16 +109,16 @@ public class ContractRepositoryTest {
                 " соответствующим удалённому контракту mobileContract",
                 contractRepository.getContractByID(mobileContract.getId()));
 
-        int before = contractRepository.getLenght();
+        int before = contractRepository.getLength();
         contractRepository.deleteByID(-92239424);
         Assert.assertEquals("Проверка на сохранение количества контрактов " +
                 "в нашем репозитории после попытки удаления контракта с несуществующим " +
-                "в нашем репозитории ID", before, contractRepository.getLenght());
+                "в нашем репозитории ID", before, contractRepository.getLength());
     }
 
     @Test
-    public void testGetLenght() {
+    public void testGetLength() {
         Assert.assertEquals("Проверка на правильность вывода длины нашего репозитория",
-                3, contractRepository.getLenght());
+                3, contractRepository.getLength());
     }
 }

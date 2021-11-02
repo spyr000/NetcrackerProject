@@ -2,16 +2,16 @@ package contracts;
 
 import person.Person;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public abstract class Contract {
     private int id;
-    private Date startTime;
-    private Date finishTime;
+    private LocalDate startTime;
+    private LocalDate finishTime;
     private int number;
     private Person owner;
 
-    public Contract(int id, Date startTime, Date finishTime, int number, Person owner) {
+    public Contract(int id, LocalDate startTime, LocalDate finishTime, int number, Person owner) {
         this.id = id;
         this.startTime = startTime;
         this.finishTime = finishTime;
@@ -27,19 +27,19 @@ public abstract class Contract {
         this.id = id;
     }
 
-    public Date getStartTime() {
+    public LocalDate getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Date startTime) {
+    public void setStartTime(LocalDate startTime) {
         this.startTime = startTime;
     }
 
-    public Date getFinishTime() {
+    public LocalDate getFinishTime() {
         return finishTime;
     }
 
-    public void setFinishTime(Date finishTime) {
+    public void setFinishTime(LocalDate finishTime) {
         this.finishTime = finishTime;
     }
 

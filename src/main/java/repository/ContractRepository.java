@@ -16,13 +16,13 @@ public class ContractRepository {
     public void add(Contract c) {
         if (getContractByID(c.getId()) != null)
             throw new RuntimeException("You trying to add a contract with already existing id");
-        if (getLenght() == 0)
+        if (getLength() == 0)
             contracts = new Contract[]{c};
         else {
-            Contract[] result = new Contract[getLenght() + 1];
-            System.arraycopy(contracts, 0, result, 0, getLenght());
+            Contract[] result = new Contract[getLength() + 1];
+            System.arraycopy(contracts, 0, result, 0, getLength());
             contracts = result;
-            contracts[getLenght() - 1] = c;
+            contracts[getLength() - 1] = c;
         }
     }
 
@@ -36,7 +36,7 @@ public class ContractRepository {
 
     public void deleteByID(int id) {
         int index = -1;
-        for (int i = 0; i < getLenght(); i++) {
+        for (int i = 0; i < getLength(); i++) {
             if (contracts[i].getId() == id) {
                 index = i;
                 break;
@@ -45,13 +45,13 @@ public class ContractRepository {
         if (index == -1)
             return;
 
-        Contract[] result = new Contract[getLenght() - 1];
+        Contract[] result = new Contract[getLength() - 1];
         System.arraycopy(contracts, 0, result, 0, index);
-        System.arraycopy(contracts, index + 1, result, index, getLenght() - index - 1);
+        System.arraycopy(contracts, index + 1, result, index, getLength() - index - 1);
         contracts = result;
     }
 
-    public int getLenght() {
+    public int getLength() {
         return contracts.length;
     }
 }
