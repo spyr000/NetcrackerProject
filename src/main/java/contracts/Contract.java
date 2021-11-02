@@ -1,6 +1,7 @@
 package contracts;
 
 import person.Person;
+
 import java.util.Date;
 
 public abstract class Contract {
@@ -21,6 +22,7 @@ public abstract class Contract {
     public int getId() {
         return id;
     }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -28,6 +30,7 @@ public abstract class Contract {
     public Date getStartTime() {
         return startTime;
     }
+
     public void setStartTime(Date startTime) {
         this.startTime = startTime;
     }
@@ -35,6 +38,7 @@ public abstract class Contract {
     public Date getFinishTime() {
         return finishTime;
     }
+
     public void setFinishTime(Date finishTime) {
         this.finishTime = finishTime;
     }
@@ -42,6 +46,7 @@ public abstract class Contract {
     public int getNumber() {
         return number;
     }
+
     public void setNumber(int number) {
         this.number = number;
     }
@@ -49,6 +54,7 @@ public abstract class Contract {
     public Person getOwner() {
         return owner;
     }
+
     public void setOwner(Person owner) {
         this.owner = owner;
     }

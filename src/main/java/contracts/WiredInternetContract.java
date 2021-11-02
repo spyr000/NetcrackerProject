@@ -4,13 +4,14 @@ import person.Person;
 
 import java.util.Date;
 
-public class WiredInternetContract extends Contract{
+public class WiredInternetContract extends Contract {
 
     private double connectionSpeed;
 
     public double getConnectionSpeed() {
         return connectionSpeed;
     }
+
     public void setConnectionSpeed(double connectionSpeed) {
         this.connectionSpeed = connectionSpeed;
     }

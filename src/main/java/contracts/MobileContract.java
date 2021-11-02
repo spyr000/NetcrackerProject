@@ -4,7 +4,7 @@ import person.Person;
 
 import java.util.Date;
 
-public class MobileContract extends Contract{
+public class MobileContract extends Contract {
     private double minutesAmount;
     private int smsAmount;
     private double trafficGbAmount;
@@ -12,18 +12,23 @@ public class MobileContract extends Contract{
     public double getMinutesAmount() {
         return minutesAmount;
     }
+
     public void setMinutesAmount(double minutesAmount) {
         this.minutesAmount = minutesAmount;
     }
+
     public int getSmsAmount() {
         return smsAmount;
     }
+
     public void setSmsAmount(int smsAmount) {
         this.smsAmount = smsAmount;
     }
+
     public double getTrafficGbAmount() {
         return trafficGbAmount;
     }
+
     public void setTrafficGbAmount(double trafficGbAmount) {
         this.trafficGbAmount = trafficGbAmount;
     }
