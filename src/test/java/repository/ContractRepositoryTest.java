@@ -15,12 +15,23 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+/**
+ * @author almtn
+ */
 public class ContractRepositoryTest {
     private Contract wiredInternetContract;
     private Contract digitalTelevisionContract;
     private Contract mobileContract;
     private ContractRepository contractRepository;
 
+    /**
+     * This function initializes fields:
+     * {@link ContractRepositoryTest#wiredInternetContract},
+     * {@link ContractRepositoryTest#digitalTelevisionContract},
+     * {@link ContractRepositoryTest#mobileContract}
+     *
+     * and adds them to {@link ContractRepositoryTest#contractRepository}
+     */
     @Before
     public void setUp() {
         contractRepository = new ContractRepository();
@@ -69,6 +80,9 @@ public class ContractRepositoryTest {
         contractRepository.add(wiredInternetContract);
     }
 
+    /**
+     * This funcion tests getting contacts by ID
+     */
     @Test
     public void testContractGetByID() {
         Assert.assertEquals("Проверка на соответствие контракта на мобильную связь" +
@@ -82,6 +96,9 @@ public class ContractRepositoryTest {
                 contractRepository.getContractByID(wiredInternetContract.getId()), wiredInternetContract);
     }
 
+    /**
+     * This function tests deleting contacts by ID
+     */
     @Test
     public void testDeleteByID() {
         ContractRepository contractRepository = new ContractRepository();
@@ -116,6 +133,9 @@ public class ContractRepositoryTest {
                 "в нашем репозитории ID", before, contractRepository.getLength());
     }
 
+    /**
+     * This function test getting length of repository
+     */
     @Test
     public void testGetLength() {
         Assert.assertEquals("Проверка на правильность вывода длины нашего репозитория",

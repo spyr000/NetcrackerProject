@@ -1,16 +1,20 @@
 package person;
 
-import junit.framework.TestCase;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.time.LocalDate;
-import java.util.Date;
 
+/**
+ * @author almtn
+ */
 public class PersonTest {
     Person person;
     @Before
+    /**
+     * This function initializes field {@link PersonTest#person}
+     */
     public void setUp()
     {
         person = new Person(1,"Testerov Tester Testerovich",
@@ -18,6 +22,9 @@ public class PersonTest {
         );
     }
 
+    /**
+     * This function tests getting person's age
+     */
     @Test
     public void testGetAge() {
         Assert.assertEquals(20,person.getAge());

@@ -2,17 +2,32 @@ package repository;
 
 import contracts.Contract;
 
+/**
+ * @author almtn
+ */
 public class ContractRepository {
     private Contract[] contracts;
 
+    /**
+     * This constructor initializes an empty contract repository
+     */
     public ContractRepository() {
         contracts = new Contract[0];
     }
 
+    /**
+     * This constructor initializes contract repository with an array of Contract objects
+     * @param inputArr array of Contract objects
+     */
     public ContractRepository(Contract[] inputArr) {
         contracts = inputArr;
     }
 
+    /**
+     * This function adding Contract c to contract repository
+     * @param c Сontract to be added
+     * @throws RuntimeException if you trying to add a Contract with already existing in contract repository ID
+     */
     public void add(Contract c) {
         if (getContractByID(c.getId()) != null)
             throw new RuntimeException("You trying to add a contract with already existing id");
@@ -26,6 +41,11 @@ public class ContractRepository {
         }
     }
 
+    /**
+     * This function returns by ID Contract from contract repository if Contract with this ID exists in contract repository
+     * @param id ID of the Contract you want to get from repository
+     * @return Contract object if Contract with this id exists in contract repository, else returns null
+     */
     public Contract getContractByID(int id) {
         for (Contract contract : contracts) {
             if (contract.getId() == id)
@@ -34,6 +54,10 @@ public class ContractRepository {
         return null;
     }
 
+    /**
+     * This function deletes by ID Contract from contract repository if Contract with this ID exists in contract repository
+     * @param id ID of the Contract you want to delete from repository
+     */
     public void deleteByID(int id) {
         int index = -1;
         for (int i = 0; i < getLength(); i++) {
@@ -51,6 +75,10 @@ public class ContractRepository {
         contracts = result;
     }
 
+    /**
+     * This function returns length of contract repository
+     * @return length of contract repository
+     */
     public int getLength() {
         return contracts.length;
     }
