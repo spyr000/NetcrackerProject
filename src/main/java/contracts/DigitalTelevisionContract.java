@@ -3,13 +3,12 @@ package contracts;
 import person.Person;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 
 /**
  * @author almtn
  */
 public class DigitalTelevisionContract extends Contract {
-    private ArrayList<String> channelPackage;
+    private String[] channelPackage;
 
     /**
      * @param id Contract ID
@@ -19,7 +18,7 @@ public class DigitalTelevisionContract extends Contract {
      * @param owner Contract owner
      * @param channelPackage Package of channels
      */
-    public DigitalTelevisionContract(int id, LocalDate startTime, LocalDate finishTime, int number, Person owner, ArrayList<String> channelPackage) {
+    public DigitalTelevisionContract(int id, LocalDate startTime, LocalDate finishTime, int number, Person owner, String[] channelPackage) {
         super(id, startTime, finishTime, number, owner);
         this.channelPackage = channelPackage;
     }
@@ -27,7 +26,7 @@ public class DigitalTelevisionContract extends Contract {
     /**
      * @return Package of channels
      */
-    public ArrayList<String> getChannelPackage() {
+    public String[] getChannelPackage() {
         return channelPackage;
     }
 
@@ -35,7 +34,7 @@ public class DigitalTelevisionContract extends Contract {
      * Sets package of channels
      * @param channelPackage Package of channels
      */
-    public void setChannelPackage(ArrayList<String> channelPackage) {
+    public void setChannelPackage(String[] channelPackage) {
         this.channelPackage = channelPackage;
     }
 
@@ -43,6 +42,6 @@ public class DigitalTelevisionContract extends Contract {
      * @return Package of channels Amount
      */
     public int getChannelsAmount() {
-        return channelPackage.size();
+        return channelPackage.length;
     }
 }

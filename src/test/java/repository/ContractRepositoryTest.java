@@ -9,11 +9,8 @@ import org.junit.Before;
 import org.junit.Test;
 import person.Gender;
 import person.Person;
-
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 /**
  * @author almtn
@@ -37,8 +34,8 @@ public class ContractRepositoryTest {
         contractRepository = new ContractRepository();
 
         mobileContract = new MobileContract(1,
-                LocalDate.of(2021, Calendar.FEBRUARY, 24),
-                LocalDate.of(2022, Calendar.MARCH, 18),
+                LocalDate.of(2021, 2, 24),
+                LocalDate.of(2022, 3, 18),
                 3,
                 new Person(2,
                         "Testerov Tester Testerovich",
@@ -51,15 +48,15 @@ public class ContractRepositoryTest {
 
         digitalTelevisionContract = new DigitalTelevisionContract(
                 2,
-                LocalDate.of(2021, Calendar.JANUARY, 24),
-                LocalDate.of(2022, Calendar.MARCH, 18),
+                LocalDate.of(2021, 1, 24),
+                LocalDate.of(2022, 4, 18),
                 4,
                 new Person(3,
                         "Testerov Tester Testerovich",
                         LocalDate.of(2002, Calendar.MAY, 29),
                         Gender.Male,
                         new int[]{2016, 134567}),
-                new ArrayList<>(List.of(new String[]{"NTV", "TNT", "STS", "MatchTV"}))
+                new String[]{"NTV", "TNT", "STS", "MatchTV"}
         );
 
         wiredInternetContract = new WiredInternetContract(
