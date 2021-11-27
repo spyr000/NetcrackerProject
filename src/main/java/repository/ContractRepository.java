@@ -26,11 +26,11 @@ public class ContractRepository {
     /**
      * This function adding Contract c to contract repository
      * @param c Сontract to be added
-     * @throws RuntimeException if you trying to add a Contract with already existing in contract repository ID
+     * @throws RuntimeException if you try to add a Contract with already existing in contract repository ID
      */
     public void add(Contract c) {
         if (getContractByID(c.getId()) != null)
-            throw new RuntimeException("You trying to add a contract with already existing id");
+            throw new RuntimeException("You're trying to add a contract with already existing id");
         if (getLength() == 0)
             contracts = new Contract[]{c};
         else {
@@ -52,6 +52,18 @@ public class ContractRepository {
                 return contract;
         }
         return null;
+    }
+
+    /**
+     * This function returns by index Contract from contract repository
+     * @param index index of the Contract you want to get from repository
+     * @return Contract object if contract repository length is bigger than index, else returns null
+     */
+    public Contract getContractByIndex(int index) {
+        if(index < getLength())
+            return contracts[index];
+        else
+            return null;
     }
 
     /**

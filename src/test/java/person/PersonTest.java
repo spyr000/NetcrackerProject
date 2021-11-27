@@ -10,7 +10,7 @@ import java.time.LocalDate;
  * @author almtn
  */
 public class PersonTest {
-    Person person;
+    Person person,samePerson;
 
     /**
      * This function initializes field {@link PersonTest#person}
@@ -19,6 +19,9 @@ public class PersonTest {
     public void setUp()
     {
         person = new Person(1,"Testerov Tester Testerovich",
+                LocalDate.of(2001,3,23),Gender.Male,new int[]{2016,234567}
+        );
+        samePerson = new Person(1,"Testerov Tester Testerovich",
                 LocalDate.of(2001,3,23),Gender.Male,new int[]{2016,234567}
         );
     }
@@ -30,4 +33,6 @@ public class PersonTest {
     public void testGetAge() {
         Assert.assertEquals(20,person.getAge());
     }
+    @Test
+    public void testEquals() { Assert.assertTrue(person.equals(samePerson));}
 }

@@ -1,11 +1,13 @@
 package person;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.time.LocalDate;
 
 /**
  * @author almtn
  */
-public class Person {
+public class Person implements Comparable<Person>{
     private int id;
     private String name;
     private LocalDate dateOfBirth;
@@ -97,9 +99,13 @@ public class Person {
     /**
      * Sets Person's passport data {@link Person#passportData}
      * @param passportData Person's series and number of passport
+     * @throws RuntimeException if you try to assign an integer array longer than 2 to the passport data array
      */
     public void setPassportData(int[] passportData) {
-        this.passportData = passportData;
+        if(passportData.length > 2)
+            throw new RuntimeException("Passport data must be an integer array of length 2!");
+        else
+            this.passportData = passportData;
     }
 
     /**
@@ -107,5 +113,27 @@ public class Person {
      */
     public int getAge() {
         return LocalDate.now().getYear() - dateOfBirth.getYear();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == this)
+            return true;
+        else if (obj == null || obj.getClass() != this.getClass()) {
+            return false;
+        }
+        else return ((Person) obj).id == this.id && ((Person) obj).name.equals(this.name) &&
+                    ((Person) obj).dateOfBirth.equals(dateOfBirth) && ((Person) obj).gender == this.gender &&
+                    ((Person) obj).passportData[0] == this.passportData[0] && ((Person) obj).passportData[1] == this.passportData[1];
+    }
+
+    @Override
+    public int compareTo(@NotNull Person o) {
+        if(this.equals(o))
+            return 0;
+        if(!this.name.equals(o.name))
+            return this.name.compareTo(o.name);
+        else
+            return dateOfBirth.compareTo(o.dateOfBirth);
     }
 }
