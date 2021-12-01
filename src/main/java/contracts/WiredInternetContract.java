@@ -3,6 +3,8 @@ package contracts;
 import person.Person;
 
 import java.time.LocalDate;
+import java.util.Arrays;
+
 /**
  * @author almtn
  */
@@ -35,5 +37,10 @@ public class WiredInternetContract extends Contract {
     public WiredInternetContract(int id, LocalDate startTime, LocalDate finishTime, int number, Person owner, double connectionSpeed) {
         super(id, startTime, finishTime, number, owner);
         this.connectionSpeed = connectionSpeed;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + " " + getConnectionSpeed();
     }
 }

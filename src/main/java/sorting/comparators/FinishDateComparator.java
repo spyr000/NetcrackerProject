@@ -17,6 +17,6 @@ public class FinishDateComparator implements Comparator<Contract> {
 
     @Override
     public int compare(Contract o1, Contract o2) {
-        return o1.getFinishDate().compareTo(o2.getFinishDate());
+        return descending ? o2.getFinishDate().compareTo(o1.getFinishDate()) : o1.getFinishDate().compareTo(o2.getFinishDate());
     }
 }

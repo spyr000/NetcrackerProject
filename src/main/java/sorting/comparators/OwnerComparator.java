@@ -18,6 +18,6 @@ public class OwnerComparator implements Comparator<Contract> {
 
     @Override
     public int compare(Contract o1, Contract o2) {
-        return o1.getOwner().compareTo(o2.getOwner());
+        return descending ? o2.getOwner().compareTo(o1.getOwner()) : o1.getOwner().compareTo(o2.getOwner());
     }
 }

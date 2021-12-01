@@ -6,16 +6,42 @@ import sorting.ISorter;
 
 import java.util.Comparator;
 
+/**
+ * @author almtn
+ * This class implements method sort from ISorter interface as a method which sorts repository with bubble sort algorithm
+ */
 public class BubbleSorter implements ISorter {
 
+    /**
+     * Sorts repository with bubble sort algorithm
+     * @param sortingRepo sorting repository
+     * @param comparator comparator
+     * @return sorted repository
+     */
     @Override
     public ContractRepository sort(ContractRepository sortingRepo, Comparator<Contract> comparator) {
         int sortingRepoLength = sortingRepo.getLength();
-        for(int i = 0; i < sortingRepoLength - 1; i ++)
-        {
-            //if(comparator(sortingRepo.getContractByIndex(i),))
 
+        ContractRepository resultRepo = null;
+        try {
+            resultRepo = (ContractRepository) sortingRepo.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
         }
-        return new ContractRepository();
+        assert resultRepo != null;
+
+        for(int j = 0; j < sortingRepoLength; j++)
+        {
+            for (int i = 0; i < sortingRepoLength - 1; i++) {
+                Contract current = resultRepo.getContractByIndex(i);
+                Contract next = resultRepo.getContractByIndex(i + 1);
+                if (comparator.compare(current, next) > 0) {
+                    resultRepo.setContractByIndex(i, next);
+                    resultRepo.setContractByIndex(i + 1, current);
+                }
+
+            }
+        }
+        return resultRepo;
     }
 }

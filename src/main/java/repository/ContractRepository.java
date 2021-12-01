@@ -2,10 +2,12 @@ package repository;
 
 import contracts.Contract;
 
+import java.util.function.Predicate;
+
 /**
  * @author almtn
  */
-public class ContractRepository {
+public class ContractRepository implements Cloneable {
     private Contract[] contracts;
 
     /**
@@ -60,10 +62,12 @@ public class ContractRepository {
      * @return Contract object if contract repository length is bigger than index, else returns null
      */
     public Contract getContractByIndex(int index) {
+        return index < getLength() ? contracts[index] : null;
+    }
+
+    public void setContractByIndex(int index, Contract contract) {
         if(index < getLength())
-            return contracts[index];
-        else
-            return null;
+            contracts[index] = contract;
     }
 
     /**
@@ -93,5 +97,21 @@ public class ContractRepository {
      */
     public int getLength() {
         return contracts.length;
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+
+    public ContractRepository findByPredicate(Predicate<Contract> predicate)
+    {
+        ContractRepository result = new ContractRepository();
+        for(Contract contract: contracts)
+        {
+            if(predicate.test(contract))
+                result.add(contract);
+        }
+        return result;
     }
 }

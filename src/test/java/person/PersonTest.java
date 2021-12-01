@@ -35,4 +35,6 @@ public class PersonTest {
     }
     @Test
     public void testEquals() { Assert.assertTrue(person.equals(samePerson));}
+    @Test
+    public void testToString() { System.out.print(person.toString());}
 }

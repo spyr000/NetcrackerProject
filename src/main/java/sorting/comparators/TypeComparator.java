@@ -1,14 +1,7 @@
 package sorting.comparators;
 
 import contracts.Contract;
-import contracts.DigitalTelevisionContract;
-import contracts.MobileContract;
-import contracts.WiredInternetContract;
-import person.Gender;
-import person.Person;
 
-import java.time.LocalDate;
-import java.util.Calendar;
 import java.util.Comparator;
 
 public class TypeComparator implements Comparator<Contract> {
@@ -25,6 +18,6 @@ public class TypeComparator implements Comparator<Contract> {
 
     @Override
     public int compare(Contract o1, Contract o2) {
-        return o1.getClass().toString().compareTo(o2.getClass().toString());
+        return descending ? o2.getClass().toString().compareTo(o1.getClass().toString()) : o1.getClass().toString().compareTo(o2.getClass().toString());
     }
 }

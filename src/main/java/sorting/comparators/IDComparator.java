@@ -17,6 +17,6 @@ public class IDComparator implements Comparator<Contract> {
 
     @Override
     public int compare(Contract o1, Contract o2) {
-        return Integer.compare(o1.getId(), o2.getId());
+        return descending ? Integer.compare(o2.getId(), o1.getId()) : Integer.compare(o1.getId(), o2.getId());
     }
 }

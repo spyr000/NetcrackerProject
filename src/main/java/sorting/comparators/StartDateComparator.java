@@ -2,8 +2,6 @@ package sorting.comparators;
 
 import contracts.Contract;
 
-import java.time.LocalDate;
-import java.util.Calendar;
 import java.util.Comparator;
 
 public class StartDateComparator implements Comparator<Contract> {
@@ -20,6 +18,6 @@ public class StartDateComparator implements Comparator<Contract> {
 
     @Override
     public int compare(Contract o1, Contract o2) {
-        return o1.getStartDate().compareTo(o2.getStartDate());
+        return descending ? o2.getStartDate().compareTo(o1.getStartDate()) : Integer.compare(o1.getNumber(), o2.getNumber());
     }
 }

@@ -3,6 +3,7 @@ package contracts;
 import person.Person;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 
 /**
  * @author almtn
@@ -72,5 +73,10 @@ public class MobileContract extends Contract {
         this.minutesAmount = minutesAmount;
         this.smsAmount = smsAmount;
         this.trafficGbAmount = trafficGbAmount;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + " " + getMinutesAmount() + " " + getSmsAmount() + " " + getTrafficGbAmount();
     }
 }

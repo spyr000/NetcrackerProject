@@ -103,5 +103,11 @@ public abstract class Contract {
     public void setOwner(Person owner) {
         this.owner = owner;
     }
+
+    @Override
+    public String toString() {
+        return getClass().toString() + " " + getId() + " " + getStartDate() + " " +
+                getFinishDate() + " " + getNumber() + " " + getOwner().toString();
+    }
 }
 

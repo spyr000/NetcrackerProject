@@ -4,13 +4,19 @@ import contracts.Contract;
 import contracts.DigitalTelevisionContract;
 import contracts.MobileContract;
 import contracts.WiredInternetContract;
+import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import person.Gender;
 import person.Person;
+import predicates.ClientNamePredicate;
+import predicates.IDpredicate;
+import predicates.PassportDataPredicate;
+
 import java.time.LocalDate;
 import java.util.Calendar;
+import java.util.function.Predicate;
 
 /**
  * @author almtn
@@ -41,7 +47,7 @@ public class ContractRepositoryTest {
                         "Testerov Tester Testerovich",
                         LocalDate.of(2001, Calendar.APRIL, 28),
                         Gender.Male,
-                        new int[]{2016, 134567}),
+                        new int[]{2016, 137567}),
                 12,
                 34,
                 56);
@@ -68,7 +74,7 @@ public class ContractRepositoryTest {
                         "Testerova Tester Testerovna",
                         LocalDate.of(2003, 5, 25),
                         Gender.Female,
-                        new int[]{2016, 134567}),
+                        new int[]{2016, 134667}),
                 23.7
         );
 
@@ -130,6 +136,14 @@ public class ContractRepositoryTest {
                 "в нашем репозитории ID", before, contractRepository.getLength());
     }
 
+    private static void printRepository(@NotNull ContractRepository contractRepository)
+    {
+        for (int i = 0;i < contractRepository.getLength();i++)
+        {
+            System.out.print(contractRepository.getContractByIndex(i).toString() + "\n");
+        }
+        System.out.print("\n");
+    }
     /**
      * This function test getting length of repository
      */
@@ -137,5 +151,21 @@ public class ContractRepositoryTest {
     public void testGetLength() {
         Assert.assertEquals("Проверка на правильность вывода длины нашего репозитория",
                 3, contractRepository.getLength());
+    }
+    @Test
+    public void testFindByClientName()
+    {
+        Predicate<Contract> predicate = new ClientNamePredicate("Testerova Tester Testerovna");
+        contractRepository = contractRepository.findByPredicate(predicate);
+        printRepository(contractRepository);
+        Assert.assertEquals("Проверка поиска по имени",wiredInternetContract,contractRepository.getContractByIndex(0));
+    }
+    @Test
+    public void testFindByPassportData()
+    {
+        Predicate<Contract> predicate = new PassportDataPredicate(new int[]{2016, 134567});
+        contractRepository = contractRepository.findByPredicate(predicate);
+        printRepository(contractRepository);
+        Assert.assertEquals("Проверка поиска по паспортным данным",digitalTelevisionContract,contractRepository.getContractByIndex(0));
     }
 }

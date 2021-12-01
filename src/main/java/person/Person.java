@@ -136,4 +136,9 @@ public class Person implements Comparable<Person>{
         else
             return dateOfBirth.compareTo(o.dateOfBirth);
     }
+    @Override
+    public String toString() {
+        return getId() + " " + getName() + " " + getDateOfBirth() + " " + getGender() + " " +
+                Integer.toString(getPassportData()[0]) + " " + Integer.toString(getPassportData()[1]);
+    }
 }

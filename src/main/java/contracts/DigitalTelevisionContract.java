@@ -3,6 +3,7 @@ package contracts;
 import person.Person;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 
 /**
  * @author almtn
@@ -43,5 +44,10 @@ public class DigitalTelevisionContract extends Contract {
      */
     public int getChannelsAmount() {
         return channelPackage.length;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + " " + Arrays.toString(getChannelPackage());
     }
 }
