@@ -118,10 +118,14 @@ public class MergeSorterTest {
         ContractRepository sortedContractRepository = mergeSorter.sort(contractRepository,idComparator);
         printRepository(sortedContractRepository);
 
-        Assert.assertEquals(contractRepository.getContractByID(1),sortedContractRepository.getContractByIndex(0));
-        Assert.assertEquals(contractRepository.getContractByID(2),sortedContractRepository.getContractByIndex(1));
-        Assert.assertEquals(contractRepository.getContractByID(3),sortedContractRepository.getContractByIndex(2));
-        Assert.assertEquals(contractRepository.getContractByID(5),sortedContractRepository.getContractByIndex(3));
+        Contract[] expextedContracts = new Contract[]{contractRepository.getContractByID(1),
+                contractRepository.getContractByID(2),contractRepository.getContractByID(3),
+                contractRepository.getContractByID(5)};
+        Contract[] actualContracts = new Contract[]{sortedContractRepository.getContractByIndex(3),
+                sortedContractRepository.getContractByIndex(2),sortedContractRepository.getContractByIndex(1),
+                sortedContractRepository.getContractByIndex(0)};
+
+        Assert.assertArrayEquals("Проверка сортировки слиянием по убыванию по id контактов",expextedContracts,actualContracts);
     }
 
     @Test
@@ -131,9 +135,13 @@ public class MergeSorterTest {
         ContractRepository sortedContractRepository = mergeSorter.sort(contractRepository,typeComparator);
         printRepository(sortedContractRepository);
 
-        Assert.assertEquals(contractRepository.getContractByID(1),sortedContractRepository.getContractByIndex(0));
-        Assert.assertEquals(contractRepository.getContractByID(5),sortedContractRepository.getContractByIndex(1));
-        Assert.assertEquals(contractRepository.getContractByID(2),sortedContractRepository.getContractByIndex(2));
-        Assert.assertEquals(contractRepository.getContractByID(3),sortedContractRepository.getContractByIndex(3));
+        Contract[] expextedContracts = new Contract[]{contractRepository.getContractByID(1),
+                contractRepository.getContractByID(5),contractRepository.getContractByID(2),
+                contractRepository.getContractByID(3)};
+        Contract[] actualContracts = new Contract[]{sortedContractRepository.getContractByIndex(0),
+                sortedContractRepository.getContractByIndex(1),sortedContractRepository.getContractByIndex(2),
+                sortedContractRepository.getContractByIndex(3)};
+
+        Assert.assertArrayEquals("Проверка сортировки слиянием по типу контактов",expextedContracts,actualContracts);
     }
 }

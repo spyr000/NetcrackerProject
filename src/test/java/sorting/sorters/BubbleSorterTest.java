@@ -103,9 +103,13 @@ public class BubbleSorterTest {
         ContractRepository sortedContractRepository = bubbleSorter.sort(contractRepository,startDateComparator);
         printRepository(sortedContractRepository);
 
-        Assert.assertEquals(contractRepository.getContractByID(1),sortedContractRepository.getContractByIndex(0));
-        Assert.assertEquals(contractRepository.getContractByID(3),sortedContractRepository.getContractByIndex(1));
-        Assert.assertEquals(contractRepository.getContractByID(2),sortedContractRepository.getContractByIndex(2));
+        Contract[] expextedContracts = new Contract[]{contractRepository.getContractByID(1),
+                contractRepository.getContractByID(3),contractRepository.getContractByID(2)};
+        Contract[] actualContracts = new Contract[]{sortedContractRepository.getContractByIndex(0),
+                sortedContractRepository.getContractByIndex(1),sortedContractRepository.getContractByIndex(2)};
+
+        Assert.assertArrayEquals("Проверка сортировки слиянием по дате начала контактов",
+                expextedContracts,actualContracts);
     }
 
     @Test
@@ -114,10 +118,13 @@ public class BubbleSorterTest {
         printRepository(contractRepository);
         ContractRepository sortedContractRepository = bubbleSorter.sort(contractRepository,finishDateComparator);
         printRepository(sortedContractRepository);
+        Contract[] expextedContracts = new Contract[]{contractRepository.getContractByID(1),
+                contractRepository.getContractByID(2),contractRepository.getContractByID(3)};
+        Contract[] actualContracts = new Contract[]{sortedContractRepository.getContractByIndex(0),
+                sortedContractRepository.getContractByIndex(1),sortedContractRepository.getContractByIndex(2)};
 
-        Assert.assertEquals(contractRepository.getContractByID(1),sortedContractRepository.getContractByIndex(0));
-        Assert.assertEquals(contractRepository.getContractByID(2),sortedContractRepository.getContractByIndex(1));
-        Assert.assertEquals(contractRepository.getContractByID(3),sortedContractRepository.getContractByIndex(2));
+        Assert.assertArrayEquals("Проверка сортировки пузырьком по убыванию по датам окончания контактов",
+                expextedContracts,actualContracts);
     }
 
 
