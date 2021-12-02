@@ -18,6 +18,7 @@ import java.util.Calendar;
 
 public class MergeSorterTest {
     private Contract wiredInternetContract;
+    private Contract mobileContract1;
     private Contract digitalTelevisionContract;
     private Contract mobileContract;
     private ContractRepository contractRepository;
@@ -73,19 +74,34 @@ public class MergeSorterTest {
                         new int[]{2016, 134567}),
                 23.7
         );
+        mobileContract1 = new MobileContract(5,
+                LocalDate.of(2021, 2, 24),
+                LocalDate.of(2022, 3, 18),
+                3,
+                new Person(2,
+                        "Testerov Tester Testerovich",
+                        LocalDate.of(2001, Calendar.APRIL, 28),
+                        Gender.Male,
+                        new int[]{2016, 134567}),
+                12,
+                34,
+                56);
+
         contractRepository.add(mobileContract);
         contractRepository.add(digitalTelevisionContract);
         contractRepository.add(wiredInternetContract);
+        contractRepository.add(mobileContract1);
 
         bubbleSorter = new BubbleSorter();
         mergeSorter = new MergeSorter();
         typeComparator = new TypeComparator();
         finishDateComparator = new FinishDateComparator();
-        idComparator = new IDComparator();
+        idComparator = new IDComparator(true);
         numberComparator = new NumberComparator();
         ownerComparator = new OwnerComparator();
         startDateComparator = new StartDateComparator();
     }
+
     private static void printRepository(@NotNull ContractRepository contractRepository)
     {
         for (int i = 0;i < contractRepository.getLength();i++)
@@ -96,7 +112,7 @@ public class MergeSorterTest {
     }
 
     @Test
-    public void testMergeSorting()
+    public void testMergeSortingByIDDesc()
     {
         printRepository(contractRepository);
         ContractRepository sortedContractRepository = mergeSorter.sort(contractRepository,idComparator);
@@ -105,5 +121,19 @@ public class MergeSorterTest {
         Assert.assertEquals(contractRepository.getContractByID(1),sortedContractRepository.getContractByIndex(0));
         Assert.assertEquals(contractRepository.getContractByID(2),sortedContractRepository.getContractByIndex(1));
         Assert.assertEquals(contractRepository.getContractByID(3),sortedContractRepository.getContractByIndex(2));
+        Assert.assertEquals(contractRepository.getContractByID(5),sortedContractRepository.getContractByIndex(3));
+    }
+
+    @Test
+    public void testMergeSortingByType()
+    {
+        printRepository(contractRepository);
+        ContractRepository sortedContractRepository = mergeSorter.sort(contractRepository,typeComparator);
+        printRepository(sortedContractRepository);
+
+        Assert.assertEquals(contractRepository.getContractByID(1),sortedContractRepository.getContractByIndex(0));
+        Assert.assertEquals(contractRepository.getContractByID(5),sortedContractRepository.getContractByIndex(1));
+        Assert.assertEquals(contractRepository.getContractByID(2),sortedContractRepository.getContractByIndex(2));
+        Assert.assertEquals(contractRepository.getContractByID(3),sortedContractRepository.getContractByIndex(3));
     }
 }

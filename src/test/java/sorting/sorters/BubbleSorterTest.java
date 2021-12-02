@@ -81,7 +81,7 @@ public class BubbleSorterTest {
         bubbleSorter = new BubbleSorter();
         mergeSorter = new MergeSorter();
         typeComparator = new TypeComparator();
-        finishDateComparator = new FinishDateComparator();
+        finishDateComparator = new FinishDateComparator(true);
         idComparator = new IDComparator();
         numberComparator = new NumberComparator();
         ownerComparator = new OwnerComparator();
@@ -97,14 +97,28 @@ public class BubbleSorterTest {
     }
 
     @Test
-    public void testBubbleSorting()
+    public void testBubbleSortingByStDate()
     {
         printRepository(contractRepository);
-        ContractRepository sortedContractRepository = bubbleSorter.sort(contractRepository,idComparator);
+        ContractRepository sortedContractRepository = bubbleSorter.sort(contractRepository,startDateComparator);
+        printRepository(sortedContractRepository);
+
+        Assert.assertEquals(contractRepository.getContractByID(1),sortedContractRepository.getContractByIndex(0));
+        Assert.assertEquals(contractRepository.getContractByID(3),sortedContractRepository.getContractByIndex(1));
+        Assert.assertEquals(contractRepository.getContractByID(2),sortedContractRepository.getContractByIndex(2));
+    }
+
+    @Test
+    public void testBubbleSortingByFnDateDesc()
+    {
+        printRepository(contractRepository);
+        ContractRepository sortedContractRepository = bubbleSorter.sort(contractRepository,finishDateComparator);
         printRepository(sortedContractRepository);
 
         Assert.assertEquals(contractRepository.getContractByID(1),sortedContractRepository.getContractByIndex(0));
         Assert.assertEquals(contractRepository.getContractByID(2),sortedContractRepository.getContractByIndex(1));
         Assert.assertEquals(contractRepository.getContractByID(3),sortedContractRepository.getContractByIndex(2));
     }
+
+
 }

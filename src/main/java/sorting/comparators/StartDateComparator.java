@@ -33,6 +33,6 @@ public class StartDateComparator implements Comparator<Contract> {
      */
     @Override
     public int compare(Contract o1, Contract o2) {
-        return descending ? o2.getStartDate().compareTo(o1.getStartDate()) : Integer.compare(o1.getNumber(), o2.getNumber());
+        return descending ? o2.getStartDate().compareTo(o1.getStartDate()) : o1.getStartDate().compareTo(o2.getStartDate());
     }
 }
