@@ -7,8 +7,8 @@ import sorting.ISorter;
 import java.util.Comparator;
 
 /**
- * @author almtn
  * This class implements method sort from ISorter interface as a method which sorts repository with bubble sort algorithm
+ * @author almtn
  */
 public class BubbleSorter implements ISorter {
 

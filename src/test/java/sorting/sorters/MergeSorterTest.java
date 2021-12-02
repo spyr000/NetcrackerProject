@@ -4,7 +4,6 @@ import contracts.Contract;
 import contracts.DigitalTelevisionContract;
 import contracts.MobileContract;
 import contracts.WiredInternetContract;
-import junit.framework.TestCase;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
 import org.junit.Before;
@@ -17,7 +16,7 @@ import sorting.comparators.*;
 import java.time.LocalDate;
 import java.util.Calendar;
 
-public class BubbleSorterTest {
+public class MergeSorterTest {
     private Contract wiredInternetContract;
     private Contract digitalTelevisionContract;
     private Contract mobileContract;
@@ -97,10 +96,10 @@ public class BubbleSorterTest {
     }
 
     @Test
-    public void testBubbleSorting()
+    public void testMergeSorting()
     {
         printRepository(contractRepository);
-        ContractRepository sortedContractRepository = bubbleSorter.sort(contractRepository,idComparator);
+        ContractRepository sortedContractRepository = mergeSorter.sort(contractRepository,idComparator);
         printRepository(sortedContractRepository);
 
         Assert.assertEquals(contractRepository.getContractByID(1),sortedContractRepository.getContractByIndex(0));

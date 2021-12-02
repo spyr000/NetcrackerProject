@@ -104,6 +104,11 @@ public class ContractRepository implements Cloneable {
         return super.clone();
     }
 
+    /**
+     * Finds contracts in repository by predicate
+     * @param predicate search predicate
+     * @return length of contract repository
+     */
     public ContractRepository findByPredicate(Predicate<Contract> predicate)
     {
         ContractRepository result = new ContractRepository();

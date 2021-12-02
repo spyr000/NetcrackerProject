@@ -11,7 +11,6 @@ import org.junit.Test;
 import person.Gender;
 import person.Person;
 import predicates.ClientNamePredicate;
-import predicates.IDpredicate;
 import predicates.PassportDataPredicate;
 
 import java.time.LocalDate;
