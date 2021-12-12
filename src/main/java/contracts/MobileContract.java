@@ -68,7 +68,7 @@ public class MobileContract extends Contract {
      * @param smsAmount SMS amount
      * @param trafficGbAmount Traffic GigaBytes amount
      */
-    public MobileContract(int id, LocalDate startTime, LocalDate finishTime, int number, Person owner, double minutesAmount, int smsAmount, double trafficGbAmount) {
+    public MobileContract(int id, LocalDate startTime, LocalDate finishTime, String number, Person owner, double minutesAmount, int smsAmount, double trafficGbAmount) {
         super(id, startTime, finishTime, number, owner);
         this.minutesAmount = minutesAmount;
         this.smsAmount = smsAmount;

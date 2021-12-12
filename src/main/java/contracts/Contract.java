@@ -11,7 +11,7 @@ public abstract class Contract {
     private int id;
     private LocalDate startDate;
     private LocalDate finishDate;
-    private int number;
+    private String number;
     private Person owner;
 
     /**
@@ -21,7 +21,7 @@ public abstract class Contract {
      * @param number Contract number
      * @param owner Contract owner
      */
-    public Contract(int id, LocalDate startDate, LocalDate finishDate, int number, Person owner) {
+    public Contract(int id, LocalDate startDate, LocalDate finishDate, String number, Person owner) {
         this.id = id;
         this.startDate = startDate;
         this.finishDate = finishDate;
@@ -77,7 +77,7 @@ public abstract class Contract {
     /**
      * @return Contract number {@link Contract#number}
      */
-    public int getNumber() {
+    public String getNumber() {
         return number;
     }
 
@@ -85,7 +85,7 @@ public abstract class Contract {
      * Sets Contract number {@link Contract#number}
      * @param number Contract number
      */
-    public void setNumber(int number) {
+    public void setNumber(String number) {
         this.number = number;
     }
 

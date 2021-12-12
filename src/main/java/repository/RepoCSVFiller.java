@@ -57,7 +57,7 @@ public class RepoCSVFiller {
         for (String[] record : records) {
             LocalDate start = LocalDate.parse(record[0].replaceAll("\\p{C}", "").trim());
             LocalDate finish = LocalDate.parse(record[1].replaceAll("\\p{C}", "").trim());
-            int number = Integer.parseInt(record[2].replaceAll("\\p{C}", "").trim());
+            String number = record[2].replaceAll("\\p{C}", "").trim();
             String name = record[3].replaceAll("\\p{C}", "").trim();
             Gender gender = Gender.valueOf(record[4].replaceAll("\\p{C}", "").trim());
             LocalDate dayOfBirth = LocalDate.parse(record[5].replaceAll("\\p{C}", "").trim());

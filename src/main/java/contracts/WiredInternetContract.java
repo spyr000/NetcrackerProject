@@ -34,7 +34,7 @@ public class WiredInternetContract extends Contract {
      * @param owner Contract owner
      * @param connectionSpeed Connection speed
      */
-    public WiredInternetContract(int id, LocalDate startTime, LocalDate finishTime, int number, Person owner, double connectionSpeed) {
+    public WiredInternetContract(int id, LocalDate startTime, LocalDate finishTime, String number, Person owner, double connectionSpeed) {
         super(id, startTime, finishTime, number, owner);
         this.connectionSpeed = connectionSpeed;
     }

@@ -33,6 +33,6 @@ public class NumberComparator implements Comparator<Contract> {
      */
     @Override
     public int compare(Contract o1, Contract o2) {
-        return descending ? Integer.compare(o2.getNumber(), o1.getNumber()) : Integer.compare(o1.getNumber(), o2.getNumber());
+        return descending ? CharSequence.compare(o2.getNumber(), o1.getNumber()) : CharSequence.compare(o1.getNumber(), o2.getNumber());
     }
 }

@@ -19,7 +19,7 @@ public class DigitalTelevisionContract extends Contract {
      * @param owner Contract owner
      * @param channelPackage Package of channels
      */
-    public DigitalTelevisionContract(int id, LocalDate startTime, LocalDate finishTime, int number, Person owner, String[] channelPackage) {
+    public DigitalTelevisionContract(int id, LocalDate startTime, LocalDate finishTime, String number, Person owner, String[] channelPackage) {
         super(id, startTime, finishTime, number, owner);
         this.channelPackage = channelPackage;
     }
