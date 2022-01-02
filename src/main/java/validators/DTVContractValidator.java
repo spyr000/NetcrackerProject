@@ -1,5 +1,6 @@
 package validators;
 
+import contracts.Contract;
 import contracts.DigitalTelevisionContract;
 
 /**
@@ -12,19 +13,19 @@ public class DTVContractValidator extends ContractValidator{
     public DTVContractValidator(){super();}
 
     /**
-     * Validates digital television contract and sets {@link #status}
+     * Validates digital television contract
      *
      * @param contract Digital television contract
      */
     public void validateContract(DigitalTelevisionContract contract) {
         super.validateContract(contract);
         if(contract.getChannelPackage() == null) {
-            status = ValidationStatus.RedRisk;
+            redriskFlag = true;
             return;
         }
         for (String channel : contract.getChannelPackage()) {
             if(channel == null) {
-                status = ValidationStatus.Error;
+                errorFlag = true;
                 return;
             }
         }

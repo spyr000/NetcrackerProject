@@ -5,8 +5,12 @@ import contracts.DigitalTelevisionContract;
 import contracts.MobileContract;
 import contracts.WiredInternetContract;
 import exceptions.CSVParseException;
+import exceptions.ContractValidationException;
 import person.Gender;
 import person.Person;
+import validators.DTVContractValidator;
+import validators.MobileContractValidator;
+import validators.WIContractValidator;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -37,8 +41,11 @@ public class RepoCSVFiller {
      * @param repo contract repository to fill
      * @throws CSVParseException if the file cannot be parsed
      */
-    public void fillRepo(ContractRepository repo) throws CSVParseException {
+    public void fillRepo(ContractRepository repo) throws CSVParseException, ContractValidationException {
         CSVReader csvReader = null;
+        int errorsCounter = 0;
+        int redrisksCounter = 0;
+        int validatedContractsCounter = 0;
 
         try {
             csvReader = new CSVReader(new FileReader(file), separator);
@@ -66,23 +73,74 @@ public class RepoCSVFiller {
             String className = record[7].replaceAll("\\p{C}", "").trim();
 
             switch (className) {
-                case ("DigitalTelevisionContract"):
+                case "DigitalTelevisionContract":
                     String[] channels = record[8].replaceAll("\\p{C}", "").trim().split(" ");
-                    repo.add(new DigitalTelevisionContract(repo.getLength(), start, finish, number,
-                            new Person(repo.getLength(), name, dayOfBirth, gender, ppData), channels));
+                    DigitalTelevisionContract dtvContractToAdd = new DigitalTelevisionContract(repo.getLength(), start, finish, number,
+                                                              new Person(repo.getLength(), name, dayOfBirth, gender, ppData), channels);
+
+                    DTVContractValidator dtvValidator = new DTVContractValidator();
+                    dtvValidator.validateContract(dtvContractToAdd);
+                    switch (dtvValidator.getStatus())
+                    {
+                        case OK:
+                            repo.add(dtvContractToAdd);
+                            break;
+                        case Error:
+                            errorsCounter++;
+                            break;
+                        default:
+                            redrisksCounter++;
+                    }
+
                     break;
-                case ("MobileContract"):
+                case "MobileContract":
                     String[] strMobileData = record[8].replaceAll("\\p{C}", "").trim().split(" ");
-                    double[] mobileData = new double[]{Double.parseDouble(strMobileData[0]), Double.parseDouble(strMobileData[1]), Double.parseDouble(strMobileData[2])};
-                    repo.add(new MobileContract(repo.getLength(), start, finish, number,
-                            new Person(repo.getLength(), name, dayOfBirth, gender, ppData), mobileData[0], (int) mobileData[1], mobileData[2]));
+                    double[] mobileData = new double[]{ Double.parseDouble(strMobileData[0]), Double.parseDouble(strMobileData[1]),
+                                                        Double.parseDouble(strMobileData[2]) };
+
+                    MobileContract mobileContractToAdd = new MobileContract(repo.getLength(), start, finish, number,
+                                                   new Person(repo.getLength(), name, dayOfBirth, gender, ppData),
+                                                   mobileData[0], (int) mobileData[1], mobileData[2]);
+
+                    MobileContractValidator mobileContractValidator = new MobileContractValidator();
+                    mobileContractValidator.validateContract(mobileContractToAdd);
+                    switch (mobileContractValidator.getStatus())
+                    {
+                        case OK:
+                            repo.add(mobileContractToAdd);
+                            break;
+                        case Error:
+                            errorsCounter++;
+                            break;
+                        default:
+                            redrisksCounter++;
+                    }
                     break;
-                case ("WiredInternetContract"):
+                case "WiredInternetContract":
                     double connectionSpeed = Double.parseDouble(record[8].replaceAll("\\p{C}", "").trim());
-                    repo.add(new WiredInternetContract(repo.getLength(), start, finish, number,
-                            new Person(repo.getLength(), name, dayOfBirth, gender, ppData), connectionSpeed));
+
+                    WiredInternetContract wiContractToAdd = new WiredInternetContract(repo.getLength(), start, finish, number,
+                            new Person(repo.getLength(), name, dayOfBirth, gender, ppData), connectionSpeed);
+
+                    WIContractValidator wiContractValidator = new WIContractValidator();
+                    wiContractValidator.validateContract(wiContractToAdd);
+                    switch (wiContractValidator.getStatus())
+                    {
+                        case OK:
+                            repo.add(wiContractToAdd);
+                            break;
+                        case Error:
+                            errorsCounter++;
+                            break;
+                        default:
+                            redrisksCounter++;
+                    }
                     break;
             }
+            validatedContractsCounter++;
+        }
+        if(errorsCounter > 0 || redrisksCounter > 0) {
+            throw new ContractValidationException(errorsCounter,redrisksCounter,validatedContractsCounter);
         }
     }
 

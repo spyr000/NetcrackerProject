@@ -9,15 +9,13 @@ import person.Person;
  * @author almtn
  */
 public abstract class ContractValidator {
+    public static final int[] ppDataLens = {4, 6};
     private static final String nameMask = "% % %";
     private static final String numberStartsWithChar = "8";
     private static final int numberLen = 11;
-    public static final int[] ppDataLens = {4,6};
-    protected ValidationStatus status;
+    protected boolean redriskFlag = false;
+    protected boolean errorFlag = false;
 
-    protected ContractValidator() {
-        status = ValidationStatus.Undefined;
-    }
 
     /**
      * @return {@link ContractValidator#numberStartsWithChar} - 1
@@ -34,44 +32,38 @@ public abstract class ContractValidator {
     private void validateOwner(Person owner) {
         String name = owner.getName();
         if (name == null) {
-            status = ValidationStatus.RedRisk;
+            redriskFlag = true;
             return;
         }
-        if(owner.getGender() == null){
-            status = ValidationStatus.RedRisk;
+        if (owner.getGender() == null) {
+            redriskFlag = true;
             return;
         }
-        if(owner.getPassportData() == null) {
-            status = ValidationStatus.RedRisk;
+        if (owner.getPassportData() == null) {
+            redriskFlag = true;
             return;
         }
         name = name.replaceAll("\\p{C}", "").trim();
         for (char c : name.toCharArray()) {
-            if(Character.isDigit(c)){
-                status = ValidationStatus.Error;
+            if (Character.isDigit(c)) {
+                redriskFlag = true;
                 return;
             }
         }
         if (nameMask.replaceAll("\\p{C}", "").trim().split(" ").length != name.split(" ").length) {
-            status = ValidationStatus.Error;
+            errorFlag = true;
             return;
         }
-        if(owner.getPassportData().length != 2)
-        {
-            status = ValidationStatus.Error;
+        if (owner.getPassportData().length != 2) {
+            errorFlag = true;
             return;
         }
-        if(Integer.toString(owner.getPassportData()[0]).length() != ppDataLens[0] ||
-                Integer.toString(owner.getPassportData()[1]).length() != ppDataLens[1])
-        {
-            status = ValidationStatus.Error;
-            return;
-        } else if(owner.getPassportData()[0]< 0 || owner.getPassportData()[1] < 0)
-        {
-            status = ValidationStatus.Error;
-            return;
+        if (Integer.toString(owner.getPassportData()[0]).length() != ppDataLens[0] ||
+                Integer.toString(owner.getPassportData()[1]).length() != ppDataLens[1]) {
+            errorFlag = true;
+        } else if (owner.getPassportData()[0] < 0 || owner.getPassportData()[1] < 0) {
+            errorFlag = true;
         }
-        status = ValidationStatus.OK;
     }
 
     /**
@@ -80,13 +72,13 @@ public abstract class ContractValidator {
      * @param number phone number
      */
     private void validateNumber(String number) {
-        if (number == null ) {
-            status = ValidationStatus.RedRisk;
+        if (number == null) {
+            redriskFlag = true;
             return;
         }
         for (char c : number.toCharArray()) {
-            if(Character.isLetter(c)) {
-                status = ValidationStatus.RedRisk;
+            if (Character.isLetter(c)) {
+                redriskFlag = true;
                 return;
             }
         }
@@ -94,35 +86,35 @@ public abstract class ContractValidator {
         if (number.startsWith("+")) {
             number = number.substring(1);
             if (!number.startsWith(getPlusNumberStartsWithChar()) || number.length() != numberLen) {
-                status = ValidationStatus.Error;
-                return;
+                errorFlag = true;
             }
         } else if (!number.startsWith(numberStartsWithChar) || number.length() != numberLen) {
-            status = ValidationStatus.Error;
-            return;
+            errorFlag = true;
         }
-        status = ValidationStatus.OK;
     }
 
     /**
-     * Validates contract and sets {@link #status}
+     * Validates contract
      *
      * @param contract Contract
      */
-    public void validateContract(Contract contract)
-    {
+    void validateContract(Contract contract) {
         validateNumber(contract.getNumber());
         validateOwner(contract.getOwner());
-        if(contract.getFinishDate().isBefore(contract.getStartDate())) {
-            status = ValidationStatus.Error;
-        } else
-            status = ValidationStatus.OK;
+        if (contract.getFinishDate().isBefore(contract.getStartDate())) {
+            errorFlag = true;
+        }
     }
 
     /**
-     * @return {@link ContractValidator#status}
+     * @return contract's validation status
      */
     public ValidationStatus getStatus() {
-        return status;
+        if (redriskFlag) {
+            return ValidationStatus.RedRisk;
+        } else if (errorFlag){
+            return ValidationStatus.Error;
+        } else
+            return ValidationStatus.OK;
     }
 }

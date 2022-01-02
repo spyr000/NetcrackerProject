@@ -12,15 +12,13 @@ public class MobileContractValidator extends ContractValidator{
     public MobileContractValidator(){super();}
 
     /**
-     * Validates mobile contract and sets {@link #status}
+     * Validates mobile contract
      *
      * @param contract Mobile contract
      */
     public void validateContract(MobileContract contract) {
         super.validateContract(contract);
         if(contract.getTrafficGbAmount() < 0 || contract.getSmsAmount() < 0 || contract.getMinutesAmount() < 0)
-            status = ValidationStatus.Error;
-        else
-            status = ValidationStatus.OK;
+            errorFlag = true;
     }
 }

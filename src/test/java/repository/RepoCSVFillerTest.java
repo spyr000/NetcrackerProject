@@ -1,6 +1,7 @@
 package repository;
 
 import exceptions.CSVParseException;
+import exceptions.ContractValidationException;
 import junit.framework.TestCase;
 
 import java.io.File;
@@ -14,7 +15,7 @@ public class RepoCSVFillerTest extends TestCase {
     public void testFillRepo(){
         try {
             repoCSVFiller.fillRepo(contractRepository);
-        } catch (CSVParseException e) {
+        } catch (CSVParseException | ContractValidationException e) {
             e.printStackTrace();
         }
         for(int i = 0;i<contractRepository.getLength();i++)
