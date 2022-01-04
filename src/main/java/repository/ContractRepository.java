@@ -2,10 +2,9 @@ package repository;
 
 import contracts.Contract;
 import injection.AutoInjectable;
-import sorting.sorters.BubbleSorter;
-import sorting.sorters.MergeSorter;
+import sorting.ISorter;
 
-import java.util.Comparator;
+import java.util.*;
 import java.util.function.Predicate;
 
 /**
@@ -14,9 +13,7 @@ import java.util.function.Predicate;
 public class ContractRepository implements Cloneable {
     private Contract[] contracts;
     @AutoInjectable
-    private BubbleSorter bubbleSorter;
-    @AutoInjectable
-    private MergeSorter mergeSorter;
+    private static List<ISorter> sorterPlugins = new ArrayList<ISorter>();
 
     /**
      * This constructor initializes an empty contract repository
@@ -133,11 +130,19 @@ public class ContractRepository implements Cloneable {
         return result;
     }
 
-    public ContractRepository bubbleSort(Comparator<Contract> comparator){
-        return bubbleSorter.sort(this,comparator);
+    public ISorter getSorterByName(String sorterName){
+        ISorter result = null;
+//        System.out.println(sorterPlugins);
+        for (ISorter sorter: sorterPlugins) {
+            if (sorter.getClass().getName().equals(sorterName)) {
+                result = sorter;
+                break;
+            }
+        }
+        return result;
     }
 
-    public ContractRepository mergeSort(Comparator<Contract> comparator){
-        return mergeSorter.sort(this,comparator);
+    public ContractRepository sort(String sorterName,Comparator<Contract> comparator){
+        return getSorterByName(sorterName).sort(this,comparator);
     }
 }
