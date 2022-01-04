@@ -4,7 +4,6 @@ import contracts.Contract;
 import contracts.DigitalTelevisionContract;
 import contracts.MobileContract;
 import contracts.WiredInternetContract;
-import junit.framework.TestCase;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
 import org.junit.Before;

@@ -1,6 +1,5 @@
 package validators;
 
-import contracts.Contract;
 import contracts.DigitalTelevisionContract;
 import org.junit.Assert;
 import org.junit.Before;

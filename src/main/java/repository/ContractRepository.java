@@ -1,7 +1,11 @@
 package repository;
 
 import contracts.Contract;
+import injection.AutoInjectable;
+import sorting.sorters.BubbleSorter;
+import sorting.sorters.MergeSorter;
 
+import java.util.Comparator;
 import java.util.function.Predicate;
 
 /**
@@ -9,6 +13,10 @@ import java.util.function.Predicate;
  */
 public class ContractRepository implements Cloneable {
     private Contract[] contracts;
+    @AutoInjectable
+    private BubbleSorter bubbleSorter;
+    @AutoInjectable
+    private MergeSorter mergeSorter;
 
     /**
      * This constructor initializes an empty contract repository
@@ -19,6 +27,7 @@ public class ContractRepository implements Cloneable {
 
     /**
      * This constructor initializes contract repository with an array of Contract objects
+     *
      * @param inputArr array of Contract objects
      */
     public ContractRepository(Contract[] inputArr) {
@@ -27,6 +36,7 @@ public class ContractRepository implements Cloneable {
 
     /**
      * This function adding Contract c to contract repository
+     *
      * @param c Сontract to be added
      * @throws RuntimeException if you try to add a Contract with already existing in contract repository ID
      */
@@ -45,6 +55,7 @@ public class ContractRepository implements Cloneable {
 
     /**
      * This function returns by ID Contract from contract repository if Contract with this ID exists in contract repository
+     *
      * @param id ID of the Contract you want to get from repository
      * @return Contract object if Contract with this id exists in contract repository, else returns null
      */
@@ -58,6 +69,7 @@ public class ContractRepository implements Cloneable {
 
     /**
      * This function returns by index Contract from contract repository
+     *
      * @param index index of the Contract you want to get from repository
      * @return Contract object if contract repository length is bigger than index, else returns null
      */
@@ -66,12 +78,13 @@ public class ContractRepository implements Cloneable {
     }
 
     public void setContractByIndex(int index, Contract contract) {
-        if(index < getLength())
+        if (index < getLength())
             contracts[index] = contract;
     }
 
     /**
      * This function deletes by ID Contract from contract repository if Contract with this ID exists in contract repository
+     *
      * @param id ID of the Contract you want to delete from repository
      */
     public void deleteByID(int id) {
@@ -93,6 +106,7 @@ public class ContractRepository implements Cloneable {
 
     /**
      * This function returns length of contract repository
+     *
      * @return length of contract repository
      */
     public int getLength() {
@@ -106,17 +120,24 @@ public class ContractRepository implements Cloneable {
 
     /**
      * Finds contracts in repository by predicate
+     *
      * @param predicate search predicate
      * @return length of contract repository
      */
-    public ContractRepository findByPredicate(Predicate<Contract> predicate)
-    {
+    public ContractRepository findByPredicate(Predicate<Contract> predicate) {
         ContractRepository result = new ContractRepository();
-        for(Contract contract: contracts)
-        {
-            if(predicate.test(contract))
+        for (Contract contract : contracts) {
+            if (predicate.test(contract))
                 result.add(contract);
         }
         return result;
+    }
+
+    public ContractRepository bubbleSort(Comparator<Contract> comparator){
+        return bubbleSorter.sort(this,comparator);
+    }
+
+    public ContractRepository mergeSort(Comparator<Contract> comparator){
+        return mergeSorter.sort(this,comparator);
     }
 }
