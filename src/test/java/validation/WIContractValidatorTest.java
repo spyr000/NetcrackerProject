@@ -1,23 +1,24 @@
-package validators;
+package validation;
 
-import contracts.DigitalTelevisionContract;
+import contracts.WiredInternetContract;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import person.Gender;
 import person.Person;
+import validation.validators.WIContractValidator;
 
 import java.time.LocalDate;
 import java.util.Calendar;
 
-public class DTVContractValidatorTest {
-    private DigitalTelevisionContract okDigitalTelevisionContract;
-    private DigitalTelevisionContract errorDigitalTelevisionContract;
-    private DigitalTelevisionContract redriskDigitalTelevisionContract;
+public class WIContractValidatorTest {
+    private WiredInternetContract okWiredInternetContract;
+    private WiredInternetContract errorWiredInternetContract;
+    private WiredInternetContract redriskWiredInternetContract;
 
     @Before
     public void setUp() {
-        okDigitalTelevisionContract = new DigitalTelevisionContract(
+        okWiredInternetContract = new WiredInternetContract(
                 2,
                 LocalDate.of(2021, 1, 24),
                 LocalDate.of(2022, 4, 18),
@@ -27,9 +28,9 @@ public class DTVContractValidatorTest {
                         LocalDate.of(2002, Calendar.MAY, 29),
                         Gender.Male,
                         new int[]{2016, 134567}),
-                new String[]{"NTV", "TNT", "STS", "MatchTV"}
+                14.4
         );
-        errorDigitalTelevisionContract = new DigitalTelevisionContract(
+        errorWiredInternetContract = new WiredInternetContract(
                 2,
                 LocalDate.of(2021, 1, 24),
                 LocalDate.of(2022, 4, 18),
@@ -39,9 +40,9 @@ public class DTVContractValidatorTest {
                         LocalDate.of(2002, Calendar.MAY, 29),
                         Gender.Male,
                         new int[]{2016, 134567}),
-                new String[]{"NTV", null, "STS", "MatchTV"}
+                -14.4
         );
-        redriskDigitalTelevisionContract = new DigitalTelevisionContract(
+        redriskWiredInternetContract = new WiredInternetContract(
                 2,
                 LocalDate.of(2021, 1, 24),
                 LocalDate.of(2022, 4, 18),
@@ -51,17 +52,19 @@ public class DTVContractValidatorTest {
                         LocalDate.of(2002, Calendar.MAY, 29),
                         Gender.Male,
                         new int[]{2016, 134567}),
-                new String[]{"NTV", "TNT", "STS", "MatchTV"}
+                -14.4
         );
     }
     @Test
     public void testContractGetByID() {
-        DTVContractValidator okValidator = new DTVContractValidator();
-        DTVContractValidator errorValidator = new DTVContractValidator();
-        DTVContractValidator redriskValidator = new DTVContractValidator();
-        okValidator.validateContract(okDigitalTelevisionContract);
-        errorValidator.validateContract(errorDigitalTelevisionContract);
-        redriskValidator.validateContract(redriskDigitalTelevisionContract);
+        WIContractValidator okValidator = new WIContractValidator();
+        WIContractValidator errorValidator = new WIContractValidator();
+        WIContractValidator redriskValidator = new WIContractValidator();
+
+
+        okValidator.validateContract(okWiredInternetContract);
+        errorValidator.validateContract(errorWiredInternetContract);
+        redriskValidator.validateContract(redriskWiredInternetContract);
 
         ValidationStatus okStatus = okValidator.getStatus();
         ValidationStatus errorStatus = errorValidator.getStatus();

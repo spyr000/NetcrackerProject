@@ -1,39 +1,24 @@
-package validators;
+package validation;
 
-import contracts.MobileContract;
+import contracts.DigitalTelevisionContract;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import person.Gender;
 import person.Person;
+import validation.validators.DTVContractValidator;
 
 import java.time.LocalDate;
 import java.util.Calendar;
 
-import static org.junit.Assert.*;
-
-public class MobileContractValidatorTest {
-    private MobileContract okMobileContract;
-    private MobileContract errorMobileContract;
-    private MobileContract redriskMobileContract;
+public class DTVContractValidatorTest {
+    private DigitalTelevisionContract okDigitalTelevisionContract;
+    private DigitalTelevisionContract errorDigitalTelevisionContract;
+    private DigitalTelevisionContract redriskDigitalTelevisionContract;
 
     @Before
     public void setUp() {
-        okMobileContract = new MobileContract(
-                2,
-                LocalDate.of(2021, 1, 24),
-                LocalDate.of(2022, 4, 18),
-                "+79102325546",
-                new Person(3,
-                        "Testerov Tester Testerovich",
-                        LocalDate.of(2002, Calendar.MAY, 29),
-                        Gender.Male,
-                        new int[]{2016, 134567}),
-                11,
-                16,
-                32
-        );
-        errorMobileContract = new MobileContract(
+        okDigitalTelevisionContract = new DigitalTelevisionContract(
                 2,
                 LocalDate.of(2021, 1, 24),
                 LocalDate.of(2022, 4, 18),
@@ -43,33 +28,41 @@ public class MobileContractValidatorTest {
                         LocalDate.of(2002, Calendar.MAY, 29),
                         Gender.Male,
                         new int[]{2016, 134567}),
-                -11,
-                16,
-                32
+                new String[]{"NTV", "TNT", "STS", "MatchTV"}
         );
-        redriskMobileContract = new MobileContract(
+        errorDigitalTelevisionContract = new DigitalTelevisionContract(
                 2,
                 LocalDate.of(2021, 1, 24),
                 LocalDate.of(2022, 4, 18),
                 "89102325546",
                 new Person(3,
-                        null,
+                        "Testerov Tester Testerovich",
                         LocalDate.of(2002, Calendar.MAY, 29),
                         Gender.Male,
                         new int[]{2016, 134567}),
-                11,
-                16,
-                32
+                new String[]{"NTV", null, "STS", "MatchTV"}
+        );
+        redriskDigitalTelevisionContract = new DigitalTelevisionContract(
+                2,
+                LocalDate.of(2021, 1, 24),
+                LocalDate.of(2022, 4, 18),
+                "4fkdas",
+                new Person(3,
+                        "Testerov Tester Testerovich",
+                        LocalDate.of(2002, Calendar.MAY, 29),
+                        Gender.Male,
+                        new int[]{2016, 134567}),
+                new String[]{"NTV", "TNT", "STS", "MatchTV"}
         );
     }
     @Test
     public void testContractGetByID() {
-        MobileContractValidator okValidator = new MobileContractValidator();
-        MobileContractValidator errorValidator = new MobileContractValidator();
-        MobileContractValidator redriskValidator = new MobileContractValidator();
-        okValidator.validateContract(okMobileContract);
-        errorValidator.validateContract(errorMobileContract);
-        redriskValidator.validateContract(redriskMobileContract);
+        DTVContractValidator okValidator = new DTVContractValidator();
+        DTVContractValidator errorValidator = new DTVContractValidator();
+        DTVContractValidator redriskValidator = new DTVContractValidator();
+        okValidator.validateContract(okDigitalTelevisionContract);
+        errorValidator.validateContract(errorDigitalTelevisionContract);
+        redriskValidator.validateContract(redriskDigitalTelevisionContract);
 
         ValidationStatus okStatus = okValidator.getStatus();
         ValidationStatus errorStatus = errorValidator.getStatus();
@@ -79,5 +72,4 @@ public class MobileContractValidatorTest {
         Assert.assertEquals(ValidationStatus.Error,errorStatus);
         Assert.assertEquals(redrisk,ValidationStatus.RedRisk);
     }
-
 }

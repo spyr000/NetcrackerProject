@@ -1,13 +1,14 @@
-package validators;
+package validation.validators;
 
 import contracts.MobileContract;
+import validation.ContractValidator;
 
 /**
  * Mobile contract validator
  *
  * @author almtn
  */
-public class MobileContractValidator extends ContractValidator{
+public class MobileContractValidator extends ContractValidator {
 
     public MobileContractValidator(){super();}
 

@@ -1,7 +1,6 @@
 package injection;
 
 import exceptions.DependencyInjectionException;
-import repository.ContractRepository;
 
 import java.io.File;
 import java.lang.annotation.Annotation;
@@ -10,24 +9,17 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.util.*;
 
-@Configuration(packages = {"sorting.sorters"})
+/**
+ * @author almtn
+ */
+@Configuration(packages = {"sorting.sorters","validation.validators"})
 public class Injector {
     private static final String rootPath = "src/main/java/";
 
-
-    public static void main(String[] args) throws IllegalAccessException {
-//        System.out.println(new Injector(new ContractRepository()).getFieldsToInject());
-        ContractRepository tmp = null;
-        try {
-            tmp = Injector.inject(new ContractRepository());
-        } catch (DependencyInjectionException e) {
-            e.printStackTrace();
-        }
-        assert tmp != null;
-        System.out.println(tmp.getSorterByName("sorting.sorters.MergeSorter"));
-        System.out.println(tmp.getSorterByName("sorting.sorters.BubbleSorter"));
-    }
-
+    /**
+     * Gets all classes from packages available in {@link Configuration} annotation
+     * @return classes from packages
+     */
     private static List<Class<?>> getClassesFromPackages() {
         //получаем пакеты из аннотации Configuration
         String[] pkgsForSearch = Injector.class.getAnnotation(Configuration.class).packages();
@@ -70,6 +62,11 @@ public class Injector {
         return classes;
     }
 
+    /**
+     * Gets all fields with {@link AutoInjectable} annotation and available for dependency injection from object
+     * @param object object for fields retrieving
+     * @return matching fields from object
+     */
     public static List<Field> getFieldsToInject(Object object) {
         //считываем все поля инжектируемого объекта
         var injectedObjectfields = object.getClass().getDeclaredFields();
@@ -91,10 +88,19 @@ public class Injector {
         return fieldsToInject;
     }
 
+    /**
+     * Gets all classes from packages available in {@link Configuration} annotation and injects their objects to
+     * object fields
+     * @param object object for injection
+     * @param <T> object type
+     * @return object with injected dependencies
+     * @throws DependencyInjectionException if there was no
+     * or there was more than one class for injecting their object into the field
+     * or if you have non-unique classes in {@link Configuration} packages
+     */
     public static <T> T inject(T object) throws DependencyInjectionException {
         //получаем классы для инъекции 
         var classes = getClassesFromPackages();
-
         if ((new HashSet<Class<?>>(classes)).size() != classes.size())
             throw new DependencyInjectionException("Non-unique classes in @Configuration packages");
         //получаем поля для инъекции
@@ -107,13 +113,36 @@ public class Injector {
                 collectionFields.add(field);
             }
         }
-
         //проходим по всем полям
         for (Field field : fields) {
             //делаем поле доступным
             field.setAccessible(true);
+
+            //если поле не является коллекцией
+            if (!collectionFields.contains(field)) {
+                //классы подходящие для инъекции своих объектов в данное поле
+                List<Class<?>> suitableClasses = new ArrayList<Class<?>>();
+                Class<?> fieldClass = field.getType();
+                for (Class<?> clazz : classes) {
+                    //если находим класс для инъекции схожий с классом поля
+                    if (fieldClass.isAssignableFrom(clazz)) {
+                        //добавляем в suitableClasses
+                        suitableClasses.add(clazz);
+                    }
+                }
+                if (suitableClasses.size() < 1)
+                    throw new DependencyInjectionException("Class for injecting his object to the field '" + field.toString() + "' was not found");
+                else if (suitableClasses.size() > 1)
+                    throw new DependencyInjectionException(suitableClasses.toString() + " classes are equally suitable for injection their objects to the field '" + field.toString() + "'");
+                else
+                    try {
+                        field.set(object, suitableClasses.get(0).getDeclaredConstructor().newInstance());
+                    } catch (IllegalAccessException | NoSuchMethodException | InstantiationException | InvocationTargetException e) {
+                        e.printStackTrace();
+                    }
+            }
             //если поле есть в множестве полей-коллекций
-            if (collectionFields.contains(field)) {
+            else {
                 Class<?> fieldGenericClass = null;
                 if (ParameterizedType.class.isAssignableFrom(field.getGenericType().getClass()))
                     //получаем дженерик поля-коллекции
@@ -154,40 +183,8 @@ public class Injector {
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }
-            } else {
-                //классы подходящие для инъекции своих объектов в данное поле
-                List<Class<?>> suitableClasses = new ArrayList<Class<?>>();
-                Class<?> fieldClass = field.getType();
-                for (Class<?> clazz : classes) {
-                    //если находим класс для инъекции схожий с классом поля
-                    if (fieldClass.isAssignableFrom(clazz)) {
-                        //добавляем в suitableClasses
-                        suitableClasses.add(clazz);
-                    }
-                }
-                if (suitableClasses.size() < 1)
-                    throw new DependencyInjectionException("Class for injecting his object to the field '" + field.toString() + "' was not found");
-                else if (suitableClasses.size() > 1)
-                    throw new DependencyInjectionException(suitableClasses.toString() + " classes are equally suitable for injection their objects to the field '" + field.toString() + "'");
-                else
-                    try {
-                        field.set(object, suitableClasses.get(0).getDeclaredConstructor().newInstance());
-                    } catch (IllegalAccessException | NoSuchMethodException | InstantiationException | InvocationTargetException e) {
-                        e.printStackTrace();
-                    }
             }
         }
-
-//        System.out.println(fields);
-//        System.out.println(collectionFields);
         return object;
     }
-
-//    public Object getInjectedObject() {
-//        return injectedObject;
-//    }
-//
-//    public void setInjectedObject(Object injectedObject) {
-//        this.injectedObject = injectedObject;
-//    }
 }

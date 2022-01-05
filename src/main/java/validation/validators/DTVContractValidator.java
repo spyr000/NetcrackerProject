@@ -1,14 +1,14 @@
-package validators;
+package validation.validators;
 
-import contracts.Contract;
 import contracts.DigitalTelevisionContract;
+import validation.ContractValidator;
 
 /**
  * Digital television contract validator
  *
  * @author almtn
  */
-public class DTVContractValidator extends ContractValidator{
+public class DTVContractValidator extends ContractValidator {
 
     public DTVContractValidator(){super();}
 

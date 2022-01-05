@@ -1,4 +1,4 @@
-package validators;
+package validation;
 
 import contracts.Contract;
 import person.Person;
@@ -98,7 +98,7 @@ public abstract class ContractValidator {
      *
      * @param contract Contract
      */
-    void validateContract(Contract contract) {
+    protected void validateContract(Contract contract) {
         validateNumber(contract.getNumber());
         validateOwner(contract.getOwner());
         if (contract.getFinishDate().isBefore(contract.getStartDate())) {

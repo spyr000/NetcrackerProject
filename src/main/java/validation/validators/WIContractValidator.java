@@ -1,13 +1,14 @@
-package validators;
+package validation.validators;
 
 import contracts.WiredInternetContract;
+import validation.ContractValidator;
 
 /**
  * Wired internet contract validator
  *
  * @author almtn
  */
-public class WIContractValidator extends ContractValidator{
+public class WIContractValidator extends ContractValidator {
 
     public WIContractValidator(){super();}
 
