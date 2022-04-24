@@ -2,15 +2,26 @@ package repository;
 
 import contracts.Contract;
 import injection.AutoInjectable;
+import jakarta.xml.bind.annotation.*;
 import sorting.ISorter;
 
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBContextFactory;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
+
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.*;
 import java.util.function.Predicate;
 
 /**
  * @author almtn
  */
+@XmlRootElement(name = "contract_repository")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class ContractRepository implements Cloneable {
+    @XmlElementWrapper
     private Contract[] contracts;
     @AutoInjectable
     private static List<ISorter> sorterPlugins = new ArrayList<ISorter>();
@@ -144,5 +155,11 @@ public class ContractRepository implements Cloneable {
 
     public ContractRepository sort(String sorterName,Comparator<Contract> comparator){
         return getSorterByName(sorterName).sort(this,comparator);
+    }
+
+    public void marshal() throws JAXBException, FileNotFoundException {
+        Marshaller marshaller = JAXBContext.newInstance(ContractRepository.class).createMarshaller();
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        marshaller.marshal(this,new FileOutputStream("repo.xml"));
     }
 }

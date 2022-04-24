@@ -1,5 +1,6 @@
 package person;
 
+import jakarta.xml.bind.annotation.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;
@@ -7,11 +8,18 @@ import java.time.LocalDate;
 /**
  * @author almtn
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Person implements Comparable<Person>{
+    @XmlAttribute
     private int id;
+    @XmlElement
     private String name;
+    @XmlElement
     private LocalDate dateOfBirth;
+    @XmlAttribute
     private Gender gender;
+    @XmlElement
     private int[] passportData;
 
     /**
@@ -32,6 +40,7 @@ public class Person implements Comparable<Person>{
     /**
      * @return Person's ID {@link Person#id}
      */
+//    @XmlAttribute
     public int getId() {
         return id;
     }

@@ -13,6 +13,8 @@ import person.Person;
 import predicates.ClientNamePredicate;
 import predicates.PassportDataPredicate;
 
+import jakarta.xml.bind.JAXBException;
+import java.io.FileNotFoundException;
 import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.function.Predicate;
@@ -166,5 +168,14 @@ public class ContractRepositoryTest {
         contractRepository = contractRepository.findByPredicate(predicate);
         printRepository(contractRepository);
         Assert.assertEquals("Проверка поиска по паспортным данным",digitalTelevisionContract,contractRepository.getContractByIndex(0));
+    }
+
+    @Test
+    public void marshal() {
+        try {
+            contractRepository.marshal();
+        } catch (JAXBException | FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }
