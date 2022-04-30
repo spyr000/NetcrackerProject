@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<contract_repository>
+    <contracts>
+        <contracts xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="mobileContract">
+            <id>1</id>
+            <startDate>2021-02-24</startDate>
+            <finishDate>2022-03-18</finishDate>
+            <number>3</number>
+            <owner dateOfBirth="2001-03-28" gender="Male" id="2" name="Testerov Tester Testerovich" passportData="2016 137567"/>
+            <minutesAmount>12.0</minutesAmount>
+            <smsAmount>34</smsAmount>
+            <trafficGbAmount>56.0</trafficGbAmount>
+        </contracts>
+        <contracts xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="digitalTelevisionContract">
+            <id>2</id>
+            <startDate>2021-01-24</startDate>
+            <finishDate>2022-04-18</finishDate>
+            <number>4</number>
+            <owner dateOfBirth="2002-04-29" gender="Male" id="3" name="Testerov Tester Testerovich" passportData="2016 134567"/>
+            <channelPackage>NTV</channelPackage>
+            <channelPackage>TNT</channelPackage>
+            <channelPackage>STS</channelPackage>
+            <channelPackage>MatchTV</channelPackage>
+        </contracts>
+        <contracts xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="wiredInternetContract">
+            <id>3</id>
+            <startDate>2021-01-24</startDate>
+            <finishDate>2022-02-18</finishDate>
+            <number>5</number>
+            <owner dateOfBirth="2003-05-25" gender="Female" id="4" name="Testerova Tester Testerovna" passportData="2016 134667"/>
+            <connectionSpeed>23.7</connectionSpeed>
+        </contracts>
+    </contracts>
+</contract_repository>

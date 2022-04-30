@@ -2,17 +2,22 @@ package repository;
 
 import contracts.Contract;
 import injection.AutoInjectable;
-import jakarta.xml.bind.annotation.*;
-import sorting.ISorter;
-
 import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBContextFactory;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import sorting.ISorter;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.util.*;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.function.Predicate;
 
 /**
@@ -21,10 +26,10 @@ import java.util.function.Predicate;
 @XmlRootElement(name = "contract_repository")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ContractRepository implements Cloneable {
-    @XmlElementWrapper
-    private Contract[] contracts;
     @AutoInjectable
     private static List<ISorter> sorterPlugins = new ArrayList<ISorter>();
+    @XmlElementWrapper
+    private Contract[] contracts;
 
     /**
      * This constructor initializes an empty contract repository
@@ -141,10 +146,9 @@ public class ContractRepository implements Cloneable {
         return result;
     }
 
-    public ISorter getSorterByName(String sorterName){
+    public ISorter getSorterByName(String sorterName) {
         ISorter result = null;
-//        System.out.println(sorterPlugins);
-        for (ISorter sorter: sorterPlugins) {
+        for (ISorter sorter : sorterPlugins) {
             if (sorter.getClass().getName().equals(sorterName)) {
                 result = sorter;
                 break;
@@ -153,13 +157,32 @@ public class ContractRepository implements Cloneable {
         return result;
     }
 
-    public ContractRepository sort(String sorterName,Comparator<Contract> comparator){
-        return getSorterByName(sorterName).sort(this,comparator);
+    public ContractRepository sort(String sorterName, Comparator<Contract> comparator) {
+        return getSorterByName(sorterName).sort(this, comparator);
     }
 
+    /**
+     * Function for saving Contract Repository to the .xml file
+     *
+     * @throws JAXBException         if JAXB can't marshal contract repository
+     * @throws FileNotFoundException if file path is bad
+     */
     public void marshal() throws JAXBException, FileNotFoundException {
         Marshaller marshaller = JAXBContext.newInstance(ContractRepository.class).createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        marshaller.marshal(this,new FileOutputStream("repo.xml"));
+        marshaller.marshal(this, new FileOutputStream("files/repo.xml"));
+    }
+
+    /**
+     * Function for extracting Contract Repository from the .xml file
+     *
+     * @return Contract Repository from xml file
+     * @throws JAXBException if JAXB can't unmarshal contract repository
+     * @throws IOException   if JAXB can't find the file
+     */
+    public ContractRepository unmarshall() throws JAXBException, IOException {
+        JAXBContext context = JAXBContext.newInstance(ContractRepository.class);
+        return (ContractRepository) context.createUnmarshaller()
+                .unmarshal(new FileReader("./files/repo.xml"));
     }
 }

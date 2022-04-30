@@ -15,6 +15,7 @@ import predicates.PassportDataPredicate;
 
 import jakarta.xml.bind.JAXBException;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.function.Predicate;
@@ -173,8 +174,30 @@ public class ContractRepositoryTest {
     @Test
     public void marshal() {
         try {
+            printRepository(contractRepository);
             contractRepository.marshal();
+
         } catch (JAXBException | FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void unmarshall() {
+        try {
+            Contract[] contractsBefore = new Contract[contractRepository.getLength()];
+            for (int i = 0; i < contractRepository.getLength(); i++) {
+                contractsBefore[i] = contractRepository.getContractByIndex(i);
+            }
+            ContractRepository contractRepository1 = contractRepository.unmarshall();
+            printRepository(contractRepository1);
+
+            Contract[] contractsAfter = new Contract[contractRepository1.getLength()];
+            for (int i = 0; i < contractRepository1.getLength(); i++) {
+                contractsAfter[i] = contractRepository1.getContractByIndex(i);
+            }
+            Assert.assertEquals(contractsBefore[0].getOwner(),contractsAfter[0].getOwner());
+        } catch (JAXBException | IOException e) {
             e.printStackTrace();
         }
     }

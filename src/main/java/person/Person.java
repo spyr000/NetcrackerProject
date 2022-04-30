@@ -1,25 +1,30 @@
 package person;
 
 import jakarta.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.jetbrains.annotations.NotNull;
+import xml.adapters.LocalDateAdapter;
 
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Optional;
 
 /**
  * @author almtn
  */
-@XmlRootElement
+
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Person implements Comparable<Person>{
-    @XmlAttribute
+
     private int id;
-    @XmlElement
+
     private String name;
-    @XmlElement
+
+    @XmlJavaTypeAdapter(LocalDateAdapter.class)
     private LocalDate dateOfBirth;
-    @XmlAttribute
+
     private Gender gender;
-    @XmlElement
+
     private int[] passportData;
 
     /**
@@ -148,6 +153,6 @@ public class Person implements Comparable<Person>{
     @Override
     public String toString() {
         return getId() + " " + getName() + " " + getDateOfBirth() + " " + getGender() + " " +
-                Integer.toString(getPassportData()[0]) + " " + Integer.toString(getPassportData()[1]);
+                Optional.of(Arrays.toString(getPassportData())).orElse("null");
     }
 }
