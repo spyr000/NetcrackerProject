@@ -9,14 +9,18 @@ import person.Person;
 
 import java.sql.*;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Calendar;
+import java.util.*;
 
+/**
+ * Class for JDBC management
+ *
+ * @author almtn
+ */
 public class JDBCManager {
-    static final String JDBC_DRIVER = "org.h2.Driver";
-    static final String USER = "sa";
-    static final String PASS = "ыф";
-    private static final String DB_URL = "jdbc:h2:tcp://localhost/~/test";
+    public static final String JDBC_DRIVER = "org.h2.Driver";
+    public static final String USER = "sa";
+    public static final String PASS = "ыф";
+    public static final String DB_URL = "jdbc:h2:tcp://localhost/~/test";
     private static final String DTV_CONTRACTS = "DTV_CONTRACTS";
     private static final String MOBILE_CONTRACTS = "MOBILE_CONTRACTS";
     private static final String WI_CONTRACTS = "WI_CONTRACTS";
@@ -44,6 +48,7 @@ public class JDBCManager {
             """
                     CREATE TABLE %s(
                     CONTRACT_ID INT PRIMARY KEY,
+                    TYPE VARCHAR(255),
                     START_DATE DATE,
                     FINISH_DATE DATE,
                     NUMBER VARCHAR(255),
@@ -84,13 +89,59 @@ public class JDBCManager {
             FROM %s
             WHERE PERSON_ID = ?;
             """.formatted(PERSONS);
+    private static final String SELECT_BEGINNING = """
+            SELECT *
+            FROM %s;
+            """;
+    private static final String SELECT_PERSON_BEGINNING_WHERE = """
+            SELECT *
+            FROM %s
+            WHERE PERSON_ID = ?;
+            """;
+    private static final String SELECT_CONTRACT_BEGINNING_WHERE = """
+            SELECT *
+            FROM %s
+            WHERE CONTRACT_ID = ?;
+            """;
+    private String jdbcDriver;
+    private String user;
+    private String pass;
+    private String url;
 
-    public static void setupDB() {
+    /**
+     * @param jdbcDriver JDBC driver
+     * @param user       Username
+     * @param pass       Password
+     * @param url        Database url
+     */
+    private JDBCManager(String jdbcDriver, String user, String pass, String url) {
+        this.jdbcDriver = jdbcDriver;
+        this.user = user;
+        this.pass = pass;
+        this.url = url;
+        try {
+            Class.forName(jdbcDriver);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Factory method for creating new JDBCManager class object
+     * and accordingly the new database with empty necessary tables
+     *
+     * @param jdbcDriver JDBC driver
+     * @param user       Username
+     * @param pass       Password
+     * @param url        Database url
+     * @return JDBCManager object
+     */
+    public static JDBCManager newEmptyDB(String jdbcDriver, String user, String pass, String url) {
+        JDBCManager jdbcManager = new JDBCManager(jdbcDriver, user, pass, url);
         Connection connection = null;
         Statement statement = null;
         try {
-            Class.forName(JDBC_DRIVER);
-            connection = DriverManager.getConnection(DB_URL, USER, PASS);
+            connection = DriverManager.getConnection(url, user, pass);
             statement = connection.createStatement();
             for (String initialStatement : INITIAL_STATEMENTS) {
                 statement.executeUpdate(initialStatement);
@@ -105,67 +156,121 @@ public class JDBCManager {
                 se2.printStackTrace();
             }
         }
+        return jdbcManager;
     }
 
-    public static void main(String[] args) {
-
-        Contract[] contracts = new Contract[]{
-                new MobileContract(1,
-                        LocalDate.of(2021, 2, 24),
-                        LocalDate.of(2022, 3, 18),
-                        "3",
-                        new Person(2,
-                                "Testerov Tester Testerovich",
-                                LocalDate.of(2001, Calendar.APRIL, 28),
-                                Gender.Male,
-                                new int[]{2016, 137567}),
-                        12,
-                        34,
-                        56),
-                new DigitalTelevisionContract(
-                        2,
-                        LocalDate.of(2021, 1, 24),
-                        LocalDate.of(2022, 4, 18),
-                        "4",
-                        new Person(3,
-                                "Testerov Tester Testerovich",
-                                LocalDate.of(2002, Calendar.MAY, 29),
-                                Gender.Male,
-                                new int[]{2016, 134567}),
-                        new String[]{"NTV", "TNT", "STS", "MatchTV"}
-                ),
-                new WiredInternetContract(
-                        3,
-                        LocalDate.of(2021, 1, 24),
-                        LocalDate.of(2022, 2, 18),
-                        "5",
-                        new Person(4,
-                                "Testerova Tester Testerovna",
-                                LocalDate.of(2003, 5, 25),
-                                Gender.Female,
-                                new int[]{2016, 134667}),
-                        23.7
-                )
-        };
-
-        setupDB();
-
-        insertContracts(contracts);
-//        Person p = new Person(1, "Testerov Tester Testerovich",
-//                LocalDate.of(2001, 3, 23), Gender.Male, new int[]{2016, 234567});
-//        insertPerson(p);
-//        System.out.println(isPersonExists(p));
+    /**
+     * Factory method for creating new JDBCManager class object
+     *
+     * @param jdbcDriver JDBC driver
+     * @param user       Username
+     * @param pass       Password
+     * @param url        Database url
+     * @return JDBCManager object
+     */
+    public static JDBCManager newDB(String jdbcDriver, String user, String pass, String url) {
+        return new JDBCManager(jdbcDriver, user, pass, url);
     }
 
-    public static boolean isPersonExists(Person person) {
+    /**
+     * Inserts contracts from contract repository to the database
+     *
+     * @param contractRepository Contract repository
+     */
+    public void insertContracts(ContractRepository contractRepository) {
+        int length = contractRepository.getLength();
+        Contract[] contracts = new Contract[length];
+        for (int i = 0; i < length; i++) {
+            contracts[i] = contractRepository.getContractByIndex(i);
+        }
+
+        String sqlContracts = INSERT_PREPARED_STATEMENT_BEGINNING.formatted(CONTRACTS, "? ,? ,? ,? ,? ,?");
+        String sqlDTV = INSERT_PREPARED_STATEMENT_FOR_DTV.formatted(DTV_CONTRACTS, "?, ?");
+        String sqlMobile = INSERT_PREPARED_STATEMENT_BEGINNING.formatted(MOBILE_CONTRACTS, "?, ?, ?, ?");
+        String sqlWI = INSERT_PREPARED_STATEMENT_BEGINNING.formatted(WI_CONTRACTS, "?, ?");
+
+        int dtvAmt = 0, mobileAmt = 0, wiAmt = 0;
+
+        Connection connection = null;
+        PreparedStatement contractStatement = null;
+        PreparedStatement dtvStatement = null;
+        PreparedStatement mobileStatement = null;
+        PreparedStatement wiStatement = null;
+        try {
+            connection = DriverManager.getConnection(url, user, pass);
+
+            contractStatement = connection.prepareStatement(sqlContracts);
+            dtvStatement = connection.prepareStatement(sqlDTV);
+            mobileStatement = connection.prepareStatement(sqlMobile);
+            wiStatement = connection.prepareStatement(sqlWI);
+
+            for (Contract contract : contracts) {
+                Person person = contract.getOwner();
+                if (!isPersonExists(person.getId())) insertPerson(person);
+                contractStatement.setInt(1, contract.getId());
+                contractStatement.setString(2, contract.getClass().getSimpleName());
+                contractStatement.setString(3, contract.getStartDate().toString());
+                contractStatement.setString(4, contract.getFinishDate().toString());
+                contractStatement.setString(5, contract.getNumber());
+                contractStatement.setInt(6, person.getId());
+                contractStatement.addBatch();
+
+                if (DigitalTelevisionContract.class.equals(contract.getClass())) {
+                    for (String s : ((DigitalTelevisionContract) contract).getChannelPackage()) {
+                        dtvStatement.setInt(1, contract.getId());
+                        dtvStatement.setString(2, s);
+                        dtvStatement.addBatch();
+                    }
+                    ++dtvAmt;
+                } else if (MobileContract.class.equals(contract.getClass())) {
+                    mobileStatement.setInt(1, contract.getId());
+                    mobileStatement.setDouble(2, ((MobileContract) contract).getMinutesAmount());
+                    mobileStatement.setInt(3, ((MobileContract) contract).getSmsAmount());
+                    mobileStatement.setDouble(4, ((MobileContract) contract).getTrafficGbAmount());
+                    mobileStatement.addBatch();
+                    ++mobileAmt;
+                } else if (WiredInternetContract.class.equals(contract.getClass())) {
+                    wiStatement.setInt(1, contract.getId());
+                    wiStatement.setDouble(2, ((WiredInternetContract) contract).getConnectionSpeed());
+                    wiStatement.addBatch();
+                    ++wiAmt;
+                }
+            }
+            contractStatement.executeBatch();
+            if (dtvAmt > 0) dtvStatement.executeBatch();
+            if (mobileAmt > 0) mobileStatement.executeBatch();
+            if (wiAmt > 0) wiStatement.executeBatch();
+        } catch (Exception se) {
+            se.printStackTrace();
+        } finally {
+            try {
+                if (contractStatement != null) contractStatement.close();
+                if (connection != null) connection.close();
+                if (dtvStatement != null) dtvStatement.close();
+                if (mobileStatement != null) mobileStatement.close();
+                if (wiStatement != null) wiStatement.close();
+            } catch (SQLException se2) {
+                se2.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Сhecks if a person with this person_id exists in the persons table
+     *
+     * @param personId person_id
+     * @return true if person with this person_id exists in the persons table,
+     * else false
+     */
+    private boolean isPersonExists(int personId) {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         boolean result = false;
         try {
-            connection = DriverManager.getConnection(DB_URL, USER, PASS);
+            connection = DriverManager.getConnection(url, user, pass);
             statement = connection.prepareStatement(SELECT_PREPARED_SINGLE_PERSON, Statement.RETURN_GENERATED_KEYS);
-            statement.setInt(1, person.getId());
+            statement.setInt(1, personId);
             resultSet = statement.executeQuery();
             if (resultSet.next()) result = resultSet.getInt(1) == 1;
         } catch (Exception se) {
@@ -182,84 +287,17 @@ public class JDBCManager {
         return result;
     }
 
-    public static void insertContracts(Contract[] contracts) {
-        String sql_contracts = INSERT_PREPARED_STATEMENT_BEGINNING.formatted(CONTRACTS, "? ,? ,? ,? ,?");
-        String sql_dtv = INSERT_PREPARED_STATEMENT_FOR_DTV.formatted(DTV_CONTRACTS, "?, ?");
-        String sql_mobile = INSERT_PREPARED_STATEMENT_BEGINNING.formatted(MOBILE_CONTRACTS, "?, ?, ?, ?");
-        String sql_wi = INSERT_PREPARED_STATEMENT_BEGINNING.formatted(WI_CONTRACTS, "?, ?");
-
-        int dtv_amt = 0, mobile_amt = 0, wi_amt = 0;
-
-        Connection connection = null;
-        PreparedStatement contract_statement = null;
-        PreparedStatement dtv_statement = null;
-        PreparedStatement mobile_statement = null;
-        PreparedStatement wi_statement = null;
-        try {
-            connection = DriverManager.getConnection(DB_URL, USER, PASS);
-
-            contract_statement = connection.prepareStatement(sql_contracts);
-            dtv_statement = connection.prepareStatement(sql_dtv);
-            mobile_statement = connection.prepareStatement(sql_mobile);
-            wi_statement = connection.prepareStatement(sql_wi);
-
-            for (Contract contract : contracts) {
-                Person person = contract.getOwner();
-                if (!isPersonExists(person)) insertPerson(person);
-                contract_statement.setInt(1, contract.getId());
-                contract_statement.setString(2, contract.getStartDate().toString());
-                contract_statement.setString(3, contract.getFinishDate().toString());
-                contract_statement.setString(4, contract.getNumber());
-                contract_statement.setInt(5, person.getId());
-                contract_statement.addBatch();
-
-                if (DigitalTelevisionContract.class.equals(contract.getClass())) {
-                    for (String s : ((DigitalTelevisionContract) contract).getChannelPackage()) {
-                        dtv_statement.setInt(1, contract.getId());
-                        dtv_statement.setString(2, s);
-                        dtv_statement.addBatch();
-                    }
-                    ++dtv_amt;
-                } else if (MobileContract.class.equals(contract.getClass())) {
-                    mobile_statement.setInt(1, contract.getId());
-                    mobile_statement.setDouble(2, ((MobileContract) contract).getMinutesAmount());
-                    mobile_statement.setInt(3, ((MobileContract) contract).getSmsAmount());
-                    mobile_statement.setDouble(4, ((MobileContract) contract).getTrafficGbAmount());
-                    mobile_statement.addBatch();
-                    ++mobile_amt;
-                } else if (WiredInternetContract.class.equals(contract.getClass())) {
-                    wi_statement.setInt(1, contract.getId());
-                    wi_statement.setDouble(2, ((WiredInternetContract) contract).getConnectionSpeed());
-                    wi_statement.addBatch();
-                    ++wi_amt;
-                }
-            }
-            contract_statement.executeBatch();
-            if (dtv_amt > 0) dtv_statement.executeBatch();
-            if (mobile_amt > 0) mobile_statement.executeBatch();
-            if (wi_amt > 0) wi_statement.executeBatch();
-        } catch (Exception se) {
-            se.printStackTrace();
-        } finally {
-            try {
-                if (contract_statement != null) contract_statement.close();
-                if (connection != null) connection.close();
-                if (dtv_statement != null) dtv_statement.close();
-                if (mobile_statement != null) mobile_statement.close();
-                if (wi_statement != null) wi_statement.close();
-            } catch (SQLException se2) {
-                se2.printStackTrace();
-            }
-        }
-
-    }
-
-    public static void insertPerson(Person person) {
+    /**
+     * Inserts person to the database
+     *
+     * @param person Person
+     */
+    private void insertPerson(Person person) {
         String sql = INSERT_PREPARED_STATEMENT_BEGINNING.formatted(PERSONS, "? ,? ,? ,? ,?");
         Connection connection = null;
         PreparedStatement statement = null;
         try {
-            connection = DriverManager.getConnection(DB_URL, USER, PASS);
+            connection = DriverManager.getConnection(url, user, pass);
             statement = connection.prepareStatement(sql);
             statement.setInt(1, person.getId());
             statement.setString(2, person.getName());
@@ -274,6 +312,132 @@ public class JDBCManager {
             try {
                 if (statement != null) statement.close();
                 if (connection != null) connection.close();
+            } catch (SQLException se2) {
+                se2.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Adds all contracts from DB to the Contract repository object
+     *
+     * @param contractRepository Contract Repository
+     */
+    public void getContractsFromDB(ContractRepository contractRepository) {
+        String sql = SELECT_BEGINNING.formatted(CONTRACTS);
+        String sqlWhere = SELECT_PERSON_BEGINNING_WHERE.formatted(PERSONS);
+        Connection connection = null;
+        Statement statement = null;
+        PreparedStatement personPreparedStatement = null;
+        PreparedStatement contractPreparedStatement = null;
+        ResultSet contractsResultSet = null;
+        ResultSet personsResultSet = null;
+        ResultSet specifiedResultSet = null;
+        Contract contractToAdd = null;
+        try {
+            connection = DriverManager.getConnection(url, user, pass);
+            statement = connection.createStatement();
+            personPreparedStatement = connection.prepareStatement(sqlWhere);
+            contractsResultSet = statement.executeQuery(sql);
+
+
+            while (contractsResultSet.next()) {
+                int id = contractsResultSet.getInt(1);
+                String type = contractsResultSet.getString(2);
+
+                LocalDate startDate = LocalDate.parse(contractsResultSet.getString(3));
+                LocalDate finishDate = LocalDate.parse(contractsResultSet.getString(4));
+                String number = contractsResultSet.getString(5);
+                int personID = contractsResultSet.getInt(6);
+                personPreparedStatement.setInt(1, personID);
+                Person person = null;
+                if (isPersonExists(personID)) {
+                    personsResultSet = personPreparedStatement.executeQuery();
+                    if (personsResultSet.next()) {
+                        int[] arr = new int[2];
+                        ResultSet tempResultSet = personsResultSet.getArray(5).getResultSet();
+                        int i = 0;
+                        while (tempResultSet.next()) {
+                            arr[i] = tempResultSet.getInt(2);
+                            i++;
+                        }
+                        tempResultSet.close();
+                        person = new Person(
+                                personsResultSet.getInt(1),
+                                personsResultSet.getString(2),
+                                personsResultSet.getDate(3).toLocalDate(),
+                                personsResultSet.getBoolean(4) ? Gender.Female : Gender.Male,
+                                arr
+                        );
+                    }
+                }
+
+                switch (type) {
+                    case "DigitalTelevisionContract" -> {
+                        contractPreparedStatement = connection.prepareStatement(
+                                SELECT_CONTRACT_BEGINNING_WHERE.formatted(DTV_CONTRACTS)
+                        );
+                        contractPreparedStatement.setInt(1, id);
+                        List<String> channels = new ArrayList<>();
+                        specifiedResultSet = contractPreparedStatement.executeQuery();
+                        while (specifiedResultSet.next()) {
+                            channels.add(specifiedResultSet.getString(3));
+                        }
+                        contractToAdd = new DigitalTelevisionContract(id,
+                                startDate,
+                                finishDate,
+                                number,
+                                person,
+                                channels.toArray(new String[]{}));
+                    }
+                    case "MobileContract" -> {
+                        contractPreparedStatement = connection.prepareStatement(
+                                SELECT_CONTRACT_BEGINNING_WHERE.formatted(MOBILE_CONTRACTS)
+                        );
+                        contractPreparedStatement.setInt(1, id);
+                        specifiedResultSet = contractPreparedStatement.executeQuery();
+                        if (specifiedResultSet.next()) {
+                            contractToAdd = new MobileContract(
+                                    id,
+                                    startDate,
+                                    finishDate,
+                                    number, person,
+                                    specifiedResultSet.getDouble(2),
+                                    specifiedResultSet.getInt(3),
+                                    specifiedResultSet.getDouble(4)
+                            );
+                        }
+                    }
+                    case "WiredInternetContract" -> {
+                        contractPreparedStatement = connection.prepareStatement(
+                                SELECT_CONTRACT_BEGINNING_WHERE.formatted(WI_CONTRACTS)
+                        );
+                        contractPreparedStatement.setInt(1, id);
+                        specifiedResultSet = contractPreparedStatement.executeQuery();
+                        if (specifiedResultSet.next()) {
+                            contractToAdd = new WiredInternetContract(
+                                    id,
+                                    startDate,
+                                    finishDate,
+                                    number, person,
+                                    specifiedResultSet.getDouble(2)
+                            );
+                        }
+                    }
+                }
+                contractRepository.add(Objects.requireNonNull(contractToAdd));
+            }
+        } catch (Exception se) {
+            se.printStackTrace();
+        } finally {
+            try {
+                if (statement != null) statement.close();
+                if (personPreparedStatement != null) personPreparedStatement.close();
+                if (contractPreparedStatement != null) contractPreparedStatement.close();
+                if (connection != null) connection.close();
+                if (personsResultSet != null) personsResultSet.close();
+                if (contractsResultSet != null) contractsResultSet.close();
+                if (specifiedResultSet != null) specifiedResultSet.close();
             } catch (SQLException se2) {
                 se2.printStackTrace();
             }
