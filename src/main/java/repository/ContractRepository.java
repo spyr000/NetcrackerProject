@@ -15,6 +15,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -26,6 +27,7 @@ import java.util.function.Predicate;
 @XmlRootElement(name = "contract_repository")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ContractRepository implements Cloneable {
+    private static final String url = "jdbc:h2:mem:";
     @AutoInjectable
     private static List<ISorter> sorterPlugins = new ArrayList<ISorter>();
     @XmlElementWrapper
@@ -184,5 +186,20 @@ public class ContractRepository implements Cloneable {
         JAXBContext context = JAXBContext.newInstance(ContractRepository.class);
         return (ContractRepository) context.createUnmarshaller()
                 .unmarshal(new FileReader("./files/repo.xml"));
+    }
+
+    public void saveToDataBase() {
+        try (Connection con = DriverManager.getConnection(url);
+             Statement stm = con.createStatement();
+             ResultSet rs = stm.executeQuery("SELECT 1+1")) {
+
+            while (rs.next()) {
+
+                System.out.println(rs.getInt(1));
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
     }
 }
